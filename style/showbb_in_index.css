@@ -6,45 +6,114 @@
     line-height: 25px;
   }
   
-  #bber-talk .li-style {
-    width: 100%;
-    height: 25px;
-    text-align: center;
-    -webkit-line-clamp: 1;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    transition: 0.3s;
-  }
-  
-  .li-style:hover{
-    color: #49b1f5;
-  }
+#bber-talk .li-style {
+  width: 100%;
+  height: 25px;
+  text-align: center;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: 0.3s;
+}
 
-  .bber-gotobb{
-    line-height: 25px;
-    margin-left: 8px;
-    transition: .3s;
-    transition-property: all;
-    transition-duration: 0.3s;
-    transition-timing-function: ease;
-    transition-delay: 0s;
+.li-style:hover{
+  color: #49b1f5;
+}
+
+.bber-gotobb{
+  line-height: 25px;
+  margin-left: 8px;
+}
+
+ul,li{
+  list-style:none;
+  display:block;
+  margin: 0;
+  padding: 0;
+}
+
+@-webkit-keyframes passing {
+  0% {
+    -webkit-transform: translateX(-50%);
+    transform: translateX(-50%);
+    opacity: 0;
   }
-  
-  ul,li{
-    list-style:none;
-    display:block;
-    margin: 0;
-    padding: 0;
+  50% {
+    -webkit-transform: translateX(0);
+    transform: translateX(0);
+    opacity: 1;
   }
-  
-  #bbTimeList{
-    background: var(--card-bg);
-    color: var(--font-color);
-    margin-top: 0rem;
-    padding: 0.6rem 1rem 0.5rem 1rem;
-    border-radius: 12px;
-    cursor: pointer;
-    box-shadow: var(--card-box-shadow);
-    display: flex;
+  100% {
+    -webkit-transform: translateX(50%);
+    transform: translateX(50%);
+    opacity: 0;
   }
+}
+@keyframes passing {
+  0% {
+    -webkit-transform: translateX(-50%);
+    transform: translateX(-50%);
+    opacity: 0;
+  }
+  50% {
+    -webkit-transform: translateX(0);
+    transform: translateX(0);
+    opacity: 1;
+  }
+  100% {
+    -webkit-transform: translateX(50%);
+    transform: translateX(50%);
+    opacity: 0;
+  }
+}
+
+#bbTimeList {
+  background: var(--card-bg);
+  color: var(--fontcolor);
+  padding: 0.6rem 1rem 0.5rem 1rem;
+  border-radius: 12px;
+  cursor: pointer;
+  box-shadow: var(--card-box-shadow);
+  display: -webkit-flex;
+  display: flex;
+  -webkit-align-items: center;
+          align-items: center;
+  overflow: hidden;
+  transition: all 0.3s;
+}
+#bbTimeList:hover {
+  box-shadow: var(--card-hover-box-shadow);
+}
+
+#bbTimeList #bber-talk .li-style:hover {
+  color: #49b1f5;
+}
+#bbTimeList .bber-gotobb {
+  line-height: 25px;
+  margin-left: 8px;
+  transition: 0.3s;
+}
+#bbTimeList .bber-gotobb.pass {
+  -webkit-animation: 1s passing infinite;
+          animation: 1s passing infinite;
+}
+.aside-bbtalk {
+  -webkit-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+}
+.bb-btn {
+  text-align: center;
+  display: block;
+  line-height: 2.4;
+  margin-top: 0.7rem;
+  background-color: var(--btn-bg);
+  color: var(--btn-color);
+  -webkit-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+}
+.bb-btn:hover {
+  color: var(--btn-color);
+}
