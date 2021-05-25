@@ -1,0 +1,455 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Adversarial Reinforcement Learning for Procedural Content Generation | 论文笔记 | Foggy World</title><meta name="keywords" content="PCG,机器学习"><meta name="author" content="Kyox24"><meta name="copyright" content="Kyox24"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="前言  这篇论文被教授要求拿出来做精读了，所以将会以读书笔记的格式来写这次的笔记。  论文信息  Adversarial Reinforcement Learning for Procedural Content Generation  概述   引言  目前强化学习（以下记作RL）的Agent泛化能力不佳，本论文的作者们认为这是因为大多数研究中，Agent都是在一款固定的游戏中进行强化学习，这">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Adversarial Reinforcement Learning for Procedural Content Generation | 论文笔记">
+<meta property="og:url" content="https://foggyworld.life/posts/43392113/index.html">
+<meta property="og:site_name" content="Foggy World">
+<meta property="og:description" content="前言  这篇论文被教授要求拿出来做精读了，所以将会以读书笔记的格式来写这次的笔记。  论文信息  Adversarial Reinforcement Learning for Procedural Content Generation  概述   引言  目前强化学习（以下记作RL）的Agent泛化能力不佳，本论文的作者们认为这是因为大多数研究中，Agent都是在一款固定的游戏中进行强化学习，这">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg">
+<meta property="article:published_time" content="2021-05-25T07:58:48.000Z">
+<meta property="article:modified_time" content="2021-05-25T07:58:48.530Z">
+<meta property="article:author" content="Kyox24">
+<meta property="article:tag" content="PCG">
+<meta property="article:tag" content="机器学习">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg"><link rel="shortcut icon" href="/images/GAME%20CONSOLE.png"><link rel="canonical" href="https://foggyworld.life/posts/43392113/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//fonts.googleapis.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web&amp;display=swap" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#2d3035","position":"bottom-left"},
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isanchor: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2021-05-25 16:58:48'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          const now = new Date()
+          const hour = now.getHours()
+          const isNight = hour <= 6 || hour >= 18
+          if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+          else if (t === 'light') activateLightMode()
+          else activateDarkMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    })(window)</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.css"><link rel="stylesheet" href="/style/showbb_in_index.css"><meta name="generator" content="Hexo 5.4.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="author-avatar"><img class="avatar-img" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/头像.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">24</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">14</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">5</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/bb/"><i class="fa-fw fas fa-quote-left"></i><span> 自言自语</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于我</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Foggy World</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/bb/"><i class="fa-fw fas fa-quote-left"></i><span> 自言自语</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于我</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">Adversarial Reinforcement Learning for Procedural Content Generation | 论文笔记</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-05-25T07:58:48.000Z" title="发表于 2021-05-25 16:58:48">2021-05-25</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-05-25T07:58:48.530Z" title="更新于 2021-05-25 16:58:48">2021-05-25</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/">论文笔记</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Adversarial Reinforcement Learning for Procedural Content Generation | 论文笔记"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div><article class="post-content" id="article-container"><h2 id="前言"><a class="markdownIt-Anchor" href="#前言"></a> 前言</h2>
+<hr />
+<p>这篇论文被教授要求拿出来做精读了，所以将会以读书笔记的格式来写这次的笔记。</p>
+<h2 id="论文信息"><a class="markdownIt-Anchor" href="#论文信息"></a> 论文信息</h2>
+<hr />
+<p><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2103.04847">Adversarial Reinforcement Learning for Procedural Content Generation</a></p>
+<h2 id="概述"><a class="markdownIt-Anchor" href="#概述"></a> 概述</h2>
+<hr />
+<h2 id="引言"><a class="markdownIt-Anchor" href="#引言"></a> 引言</h2>
+<hr />
+<p>目前强化学习（以下记作RL）的Agent泛化能力不佳，本论文的作者们认为这是因为大多数研究中，Agent都是在一款固定的游戏中进行强化学习，这样从数据集的角度来看，实际上训练集和验证集是雷同的。这种情况给游戏开发和RL的结合带来了很多不便，主要体现在，如果需要在游戏开发中使用RL对游戏进行自动化测试，每次改动开发资源都需要重新进行训练，这在时间或经济成本上是很难以接受的。</p>
+<p>为了解决上述问题，本文提出通过PCG技术生成不断变化的环境，把RL的Agent放置于这种环境中进行训练，以达到提高泛化能力的目的。</p>
+<h2 id="相关研究"><a class="markdownIt-Anchor" href="#相关研究"></a> 相关研究</h2>
+<hr />
+<h3 id="机器学习在游戏中的应用"><a class="markdownIt-Anchor" href="#机器学习在游戏中的应用"></a> 机器学习在游戏中的应用</h3>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://ojs.aaai.org//index.php/AIIDE/article/view/7409">Using Deep Convolutional Neural Networks to Detect Rendered Glitches in Video Games</a><sup class="footnote-ref"><a href="#fn1" id="fnref1">[1]</a></sup>
+<ul>
+<li>主要阐述了监督学习可以用于检测图像的渲染错误并进行错误分类</li>
+</ul>
+</li>
+<li><a target="_blank" rel="noopener" href="https://arxiv.org/abs/1803.05402">Imitation Learning with Concurrent Actions in 3D Games</a><sup class="footnote-ref"><a href="#fn2" id="fnref2">[2]</a></sup>
+<ul>
+<li>主要阐述了通过模仿学习在可以加快Agent在较为复杂的3D游戏环境中的学习速度</li>
+</ul>
+</li>
+</ul>
+<h3 id="机器学习在游戏测试中的应用"><a class="markdownIt-Anchor" href="#机器学习在游戏测试中的应用"></a> 机器学习在游戏测试中的应用</h3>
+<p>因为RL的Agent已被证明能在没有先验知识的前提下学习一个游戏的玩法，所以我们有理由相信Agent很有机会做出非预期的行为来帮助开发者找到环境中的不平衡以及漏洞。</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://ieeexplore.ieee.org/document/8952543">Wuji: Automatic Online Combat Game Testing Using Evolutionary Deep Reinforcement Learning</a><sup class="footnote-ref"><a href="#fn3" id="fnref3">[3]</a></sup>
+<ul>
+<li>主要阐述了通过结合RL和进化算法以及结合RL和多目标优化进行游戏测试</li>
+</ul>
+</li>
+<li><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2103.15819">Augmenting Automated Game Testing with Deep Reinforcement Learning</a><sup class="footnote-ref"><a href="#fn4" id="fnref4">[4]</a></sup>
+<ul>
+<li>主要阐述了通过RL进行游戏漏洞探索与发现</li>
+</ul>
+</li>
+</ul>
+<h3 id="机器学习与pcg"><a class="markdownIt-Anchor" href="#机器学习与pcg"></a> 机器学习与PCG</h3>
+<p>通过机器学习来进行PCG被成为PCGML，但是近年来，人们开始发现PCG这一技术也许能够反哺机器学习，来解决一些棘手问题。</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://arxiv.org/abs/1911.13071">Increasing Generality in Machine Learning through Procedural Content Generation</a><sup class="footnote-ref"><a href="#fn5" id="fnref5">[5]</a></sup>
+<ul>
+<li>主要阐述了现有的RL的Agent普遍有对于训练环境过拟合的问题，并提出通过PCG产生更加动态的环境则可以缓解这一问题</li>
+</ul>
+</li>
+<li><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2001.09212">PCGRL: Procedural Content Generation via Reinforcement Learning</a><sup class="footnote-ref"><a href="#fn6" id="fnref6">[6]</a></sup>
+<ul>
+<li>主要阐述了RL可以作为游戏开发者对游戏进行设计的一种框架</li>
+</ul>
+</li>
+<li><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2002.05259">Fully Differentiable Procedural Content Generation through Generative Playing Networks</a><sup class="footnote-ref"><a href="#fn7" id="fnref7">[7]</a></sup>
+<ul>
+<li>主要阐述了一种由玩家Agent和生成网络组成的完全可微分的框架，可以产生不同难度的关卡</li>
+</ul>
+</li>
+<li><a target="_blank" rel="noopener" href="https://arxiv.org/abs/1901.01753">Paired Open-Ended Trailblazer (POET): Endlessly Generating Increasingly Complex and Diverse Learning Environments and Their Solutions</a><sup class="footnote-ref"><a href="#fn8" id="fnref8">[8]</a></sup>
+<ul>
+<li>主要阐述了通过记忆Agent和环境的pair来提高Agent的泛化能力</li>
+</ul>
+</li>
+<li><a target="_blank" rel="noopener" href="https://arxiv.org/abs/1910.07224">Teacher algorithms for curriculum learning of Deep RL in continuously parameterized environments</a><sup class="footnote-ref"><a href="#fn9" id="fnref9">[9]</a></sup>
+<ul>
+<li>主要阐述了教师算法通过创建难度递增的环境使学生学习的框架</li>
+</ul>
+</li>
+</ul>
+<h3 id="对抗性强化学习arl"><a class="markdownIt-Anchor" href="#对抗性强化学习arl"></a> 对抗性强化学习（ARL）</h3>
+<ul>
+<li><a target="_blank" rel="noopener" href="http://reports-archive.adm.cs.cmu.edu/anon/anon/usr0/ftp/usr/ftp/2003/CMU-CS-03-107.pdf">Adversarial reinforcement learning</a><sup class="footnote-ref"><a href="#fn10" id="fnref10">[10]</a></sup>
+<ul>
+<li>主要阐述了ARL的基础框架，所谓的对抗性往往是指Agent与环境之间的对抗</li>
+</ul>
+</li>
+<li><a target="_blank" rel="noopener" href="https://arxiv.org/abs/1703.02702">Robust Adversarial Reinforcement Learning</a><sup class="footnote-ref"><a href="#fn11" id="fnref11">[11]</a></sup>
+<ul>
+<li>主要阐述了一种通过额外训练一个给环境施加干扰的的Agent来提高真正做任务的Agent的泛化能力</li>
+</ul>
+</li>
+</ul>
+<h2 id="模型"><a class="markdownIt-Anchor" href="#模型"></a> 模型</h2>
+<hr />
+<h3 id="模型总述"><a class="markdownIt-Anchor" href="#模型总述"></a> 模型总述</h3>
+<p>模型示意图如下：</p>
+<img src= "/images/Ripple.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/20210524201750.png" style="zoom:50%;" />
+<p>笔者表示本研究受了许多其他研究的启发，部分列表如下：</p>
+<ul>
+<li>通过PCG增加RL的Agent的泛化能力<sup class="footnote-ref"><a href="#fn5" id="fnref5:1">[5:1]</a></sup></li>
+<li>通过RL进行PCG，这是本篇研究的基石<sup class="footnote-ref"><a href="#fn6" id="fnref6:1">[6:1]</a></sup></li>
+<li>本文的由Generator和Solver组成的模型架构启发自GPNs<sup class="footnote-ref"><a href="#fn7" id="fnref7:1">[7:1]</a></sup></li>
+<li>设置一个与Reward相关的辅助输入，这个可以提高学习效果，同时在本研究中可以用来控制PCG端的输出<sup class="footnote-ref"><a href="#fn10" id="fnref10:1">[10:1]</a></sup></li>
+<li>为RL的Agent提供难度逐渐提高的环境可以提高能力，在本研究中可以利用辅助输入来生成难度逐渐提高的环境<sup class="footnote-ref"><a href="#fn12" id="fnref12">[12]</a></sup></li>
+<li>从整体上说，本研究的基础思想是受到GANs的启发<sup class="footnote-ref"><a href="#fn13" id="fnref13">[13]</a></sup></li>
+</ul>
+<p>与上面提到过的一样，两个有着共生关系的Agent是本模型的重要组成部分，我们可以从以下两方面利用模型：</p>
+<ul>
+<li>Generator总在试图使Solver失败，这能促使Solver变得更加健壮</li>
+<li>Solver总在试图在Generator生成的环境中完成任务，这能一定程度上保证Generator生成的内容的可玩性</li>
+</ul>
+<p>这样的模型可以用以应对以下三个挑战：</p>
+<ul>
+<li>Generator需要为Solver生成不同的、可以使Solver变得更加健壮的训练数据（博主认为这可以说是ARL方面的挑战）</li>
+<li>Generator可以帮助游戏开发者生成可控的以及可以通过某些指标量化的环境（博主认为这可以说是PCG方面的挑战）</li>
+<li>Sovler有足够的泛化性能可以帮助游戏开发者在游戏开发进程中，在不需再次训练的情况下进行游戏测试（博主认为这可以说是RL在游戏开发中的应用方面的挑战）</li>
+</ul>
+<h3 id="generator"><a class="markdownIt-Anchor" href="#generator"></a> Generator</h3>
+<p>总的来说，本文中的Generator与PCGRL<sup class="footnote-ref"><a href="#fn6" id="fnref6:2">[6:2]</a></sup>相似，不同之处在于PCGRL总是从一个随机生成的内容出发，在改动百分比（Change Percentage，一个超参）的限制之下生成内容，而本研究总是从空的内容开始创建环境，这样做的优点是Generator在Solver对现有环境做出最新的进展之前不会生成新的内容，因此保证了可玩性/可解性。同时还定义了一个辅助任务，由辅助输入间接地控制Generator生成的内容。</p>
+<div class="note primary flat"><p>博主认为上述的从空环境开始生成的做法的前提是本篇论文使用的环境——赛道生成与平台生成，本身有着渐进的特质，这一做法并不能适用于所有类型的游戏</p>
+</div>
+<h4 id="辅助输入"><a class="markdownIt-Anchor" href="#辅助输入"></a> 辅助输入</h4>
+<p>需要辅助输入的原因有以下两点：</p>
+<ul>
+<li>希望Generator有能力生成多样性的内容</li>
+<li>希望用户可以控制Generator生成的内容</li>
+</ul>
+<p>简而言之，本文的做法是通过辅助输入来影响Reward Function，以达到控制生成效果的目标。在本研究中作者们使用辅助输入主要影响难易度，具体的做法在下面Reward结构的部分进行说明。</p>
+<h4 id="reward结构"><a class="markdownIt-Anchor" href="#reward结构"></a> Reward结构</h4>
+<p>总的来说，Reward被分为内部与外部两个部分，内部只跟Generator的行为有关，而外部则跟Solver的行为有关。更具体地说，作者们希望Reward Function具有两方面的驱动力：</p>
+<ul>
+<li>驱动Generator生成Sovler可解的环境</li>
+<li>驱动Sovler在环境中采取次优而非最优的行为</li>
+</ul>
+<p>根据上述想法设置的Reward Function如下：</p>
+<p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>r</mi><mo>=</mo><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>0</mn></mrow><mi>n</mi></munderover><msub><mi>r</mi><mrow><mi>i</mi><mi>n</mi><mi>t</mi></mrow></msub><msub><mi>λ</mi><msub><mi>A</mi><mi>i</mi></msub></msub><msub><mi>α</mi><mi>i</mi></msub><mo>+</mo><msub><mi>r</mi><mrow><mi>e</mi><mi>x</mi><mi>t</mi></mrow></msub><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>0</mn></mrow><mi>n</mi></munderover><msub><mi>λ</mi><msub><mi>A</mi><mi>i</mi></msub></msub><msub><mi>β</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">r = \sum^n_{i=0}r_{int}\lambda_{A_i}\alpha_i+r_{ext}\sum^n_{i=0}\lambda_{A_i}\beta_i
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:2.929066em;vertical-align:-1.277669em;"></span><span class="mop op-limits"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.6513970000000002em;"><span style="top:-1.872331em;margin-left:0em;"><span class="pstrut" style="height:3.05em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight">i</span><span class="mrel mtight">=</span><span class="mord mtight">0</span></span></span></span><span style="top:-3.050005em;"><span class="pstrut" style="height:3.05em;"></span><span><span class="mop op-symbol large-op">∑</span></span></span><span style="top:-4.3000050000000005em;margin-left:0em;"><span class="pstrut" style="height:3.05em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">n</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.277669em;"><span></span></span></span></span></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:-0.02778em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight">i</span><span class="mord mathdefault mtight">n</span><span class="mord mathdefault mtight">t</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord"><span class="mord mathdefault">λ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.32833099999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathdefault mtight">A</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3280857142857143em;"><span style="top:-2.357em;margin-left:0em;margin-right:0.07142857142857144em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mathdefault mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.143em;"><span></span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2501em;"><span></span></span></span></span></span></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.0037em;">α</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:-0.0037em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:2.929066em;vertical-align:-1.277669em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2805559999999999em;"><span style="top:-2.5500000000000003em;margin-left:-0.02778em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight">e</span><span class="mord mathdefault mtight">x</span><span class="mord mathdefault mtight">t</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mop op-limits"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.6513970000000002em;"><span style="top:-1.872331em;margin-left:0em;"><span class="pstrut" style="height:3.05em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight">i</span><span class="mrel mtight">=</span><span class="mord mtight">0</span></span></span></span><span style="top:-3.050005em;"><span class="pstrut" style="height:3.05em;"></span><span><span class="mop op-symbol large-op">∑</span></span></span><span style="top:-4.3000050000000005em;margin-left:0em;"><span class="pstrut" style="height:3.05em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">n</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.277669em;"><span></span></span></span></span></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathdefault">λ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.32833099999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathdefault mtight">A</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3280857142857143em;"><span style="top:-2.357em;margin-left:0em;margin-right:0.07142857142857144em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mathdefault mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.143em;"><span></span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2501em;"><span></span></span></span></span></span></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.05278em;">β</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:-0.05278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span></span></p>
+<p>其中：</p>
+<ul>
+<li><span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>λ</mi><msub><mi>A</mi><mi>i</mi></msub></msub></mrow><annotation encoding="application/x-tex">\lambda_{A_i}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9445399999999999em;vertical-align:-0.2501em;"></span><span class="mord"><span class="mord mathdefault">λ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.32833099999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathdefault mtight">A</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3280857142857143em;"><span style="top:-2.357em;margin-left:0em;margin-right:0.07142857142857144em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mathdefault mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.143em;"><span></span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2501em;"><span></span></span></span></span></span></span></span></span></span>：辅助输入，<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>λ</mi><msub><mi>A</mi><mi>i</mi></msub></msub><mo>∈</mo><mo stretchy="false">[</mo><mo>−</mo><mn>1</mn><mo separator="true">,</mo><mn>1</mn><mo stretchy="false">]</mo></mrow><annotation encoding="application/x-tex">\lambda_{A_i}\in[-1,1]</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9445399999999999em;vertical-align:-0.2501em;"></span><span class="mord"><span class="mord mathdefault">λ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.32833099999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathdefault mtight">A</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3280857142857143em;"><span style="top:-2.357em;margin-left:0em;margin-right:0.07142857142857144em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mathdefault mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.143em;"><span></span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2501em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">∈</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">[</span><span class="mord">−</span><span class="mord">1</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord">1</span><span class="mclose">]</span></span></span></span></li>
+<li><span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>r</mi><mrow><mi>i</mi><mi>n</mi><mi>t</mi></mrow></msub></mrow><annotation encoding="application/x-tex">r_{int}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.58056em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:-0.02778em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight">i</span><span class="mord mathdefault mtight">n</span><span class="mord mathdefault mtight">t</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>：内部奖励</li>
+<li><span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>α</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">\alpha_i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.58056em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.0037em;">α</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:-0.0037em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>：内部奖励的权重</li>
+<li><span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>r</mi><mrow><mi>e</mi><mi>x</mi><mi>t</mi></mrow></msub></mrow><annotation encoding="application/x-tex">r_{ext}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.58056em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2805559999999999em;"><span style="top:-2.5500000000000003em;margin-left:-0.02778em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight">e</span><span class="mord mathdefault mtight">x</span><span class="mord mathdefault mtight">t</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>：外部奖励</li>
+<li><span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>β</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">\beta_i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.05278em;">β</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:-0.05278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>：外部奖励的权重</li>
+</ul>
+<div class="note primary flat"><p>可以注意到Reward Function中，<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>r</mi><mrow><mi>i</mi><mi>n</mi><mi>t</mi></mrow></msub></mrow><annotation encoding="application/x-tex">r_{int}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.58056em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:-0.02778em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight">i</span><span class="mord mathdefault mtight">n</span><span class="mord mathdefault mtight">t</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>在累加号内部，而<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>r</mi><mrow><mi>e</mi><mi>x</mi><mi>t</mi></mrow></msub></mrow><annotation encoding="application/x-tex">r_{ext}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.58056em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2805559999999999em;"><span style="top:-2.5500000000000003em;margin-left:-0.02778em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight">e</span><span class="mord mathdefault mtight">x</span><span class="mord mathdefault mtight">t</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>在累加号外部，博主认为这是因为内部报酬是有可能随着每一个动作发生改变，而外部报酬由于来自于Solver可能是不经常发生变化的</p>
+</div>
+<h3 id="solver"><a class="markdownIt-Anchor" href="#solver"></a> Solver</h3>
+<p>总的来说，Solver使用的是通过PPO进行RL的Agent，Reward Function包含一个取得进展时获得的正Reward与失败时的负Reward。</p>
+<h2 id="环境"><a class="markdownIt-Anchor" href="#环境"></a> 环境</h2>
+<hr />
+<p>本文使用了两种3D环境来验证模型，分别是第三人称平台跳跃与赛车游戏，并使用Unity ML-Agents API<sup class="footnote-ref"><a href="#fn14" id="fnref14">[14]</a></sup>连接到训练环境。</p>
+<h3 id="采用的representation"><a class="markdownIt-Anchor" href="#采用的representation"></a> 采用的Representation</h3>
+<p>根据PCGRL<sup class="footnote-ref"><a href="#fn6" id="fnref6:3">[6:3]</a></sup>中定义的Representation，本文采用的是Turtle。</p>
+<h3 id="赛车游戏"><a class="markdownIt-Anchor" href="#赛车游戏"></a> 赛车游戏</h3>
+<p>Generator的目标是在一片有障碍物的区域中，在给定起点与随机终点的情况下，分段地生成不碰到障碍物的赛道，在赛车到达目前已经生成的赛道末尾前15米处由Solver向Generator发起生成赛道片段的请求，Generator的更为详细的Observation和Action如下：</p>
+<ul>
+<li>Observation：一个状态数组，其包含着目前赛道片段与终点的相对位置、角度与距离信息以及目前赛道的方向和辅助输入，另外还有一个raycast来提供前方环境的信息（如是否有障碍物等）</li>
+<li>Action：决定生成赛道片段的长度，弯曲度数与高度</li>
+</ul>
+<p>Solver的目标是尽快地达到终点，如果未能完成赛道则会获得负Reward，Solver的更为详细的Observation和Action如下：</p>
+<ul>
+<li>Observation：一个状态数组，其包含着目前赛车与终点的相对位置、角度与角速度、速度和绝对角度，另外还有一个raycast来提供前方环境的信息（如是否有障碍物等）</li>
+<li>Action：油门和转向</li>
+</ul>
+<h3 id="第三人称平台跳跃游戏"><a class="markdownIt-Anchor" href="#第三人称平台跳跃游戏"></a> 第三人称平台跳跃游戏</h3>
+<div class="note warning flat"><p>在原文中没有写明具体的Observation有哪些，博文中写道的为博主推测</p>
+</div>
+<p>Generator的目标是在一片区域中，在给定起点与随机终点的情况下，分块地生成平台，Generator的更为详细的Observation和Action如下：</p>
+<ul>
+<li>Observation：一个状态数组，其包含着目前平台与终点的相对位置、角度与距离信息以及与前一个平台的位置、大小、角度和辅助输入</li>
+<li>Action：决定生成下一个平台离当前平台的距离、角度和高度变化以及平台自身大小</li>
+</ul>
+<p>Solver的目标是尽快地达到终点，如果未能完成则会获得负Reward，Solver的更为详细的Observation和Action如下：</p>
+<ul>
+<li>Observation：一个状态数组，其包含着目前角色与终点的相对位置、角度等，另外还有一个raycast来提供前方环境的信息（如是否有障碍物等）</li>
+<li>Action：方向与跳跃</li>
+</ul>
+<h2 id="训练"><a class="markdownIt-Anchor" href="#训练"></a> 训练</h2>
+<hr />
+<p>采用的训练方式源自Alternating Markov Game<sup class="footnote-ref"><a href="#fn15" id="fnref15">[15]</a></sup>，即Generator 和Solver会交替进行训练，其中一个网络在更新参数时另一个网络会被固定住。</p>
+<p>Generator的训练设置如下：</p>
+<img src= "/images/Ripple.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/20210525114722.png" style="zoom:50%;" />
+<p>Solver的训练设置如下：</p>
+<img src= "/images/Ripple.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/20210525114755.png" style="zoom:50%;" />
+<h3 id="关于reward-function和辅助输入在训练中的进一步说明"><a class="markdownIt-Anchor" href="#关于reward-function和辅助输入在训练中的进一步说明"></a> 关于Reward Function和辅助输入在训练中的进一步说明</h3>
+<p>在平台跳跃游戏中，Solver每次失败时Generator会得到<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>λ</mi><msub><mi>A</mi><mi>i</mi></msub></msub><mo>×</mo><mn>10</mn></mrow><annotation encoding="application/x-tex">\lambda_{A_i}\times10</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9445399999999999em;vertical-align:-0.2501em;"></span><span class="mord"><span class="mord mathdefault">λ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.32833099999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathdefault mtight">A</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3280857142857143em;"><span style="top:-2.357em;margin-left:0em;margin-right:0.07142857142857144em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mathdefault mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.143em;"><span></span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2501em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">1</span><span class="mord">0</span></span></span></span>的奖励，这意味着我们可以通过调整辅助输入<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>λ</mi><msub><mi>A</mi><mi>i</mi></msub></msub></mrow><annotation encoding="application/x-tex">\lambda_{A_i}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9445399999999999em;vertical-align:-0.2501em;"></span><span class="mord"><span class="mord mathdefault">λ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.32833099999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathdefault mtight">A</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3280857142857143em;"><span style="top:-2.357em;margin-left:0em;margin-right:0.07142857142857144em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mathdefault mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.143em;"><span></span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2501em;"><span></span></span></span></span></span></span></span></span></span>来驱动Generator的不同行为，效果如下：</p>
+<img src= "/images/Ripple.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/20210525120755.png" style="zoom:50%;" />
+<p>可以看到，辅助输入大于0时偏向生成简单的关卡，辅助输入小于0时则偏向生成困难的关卡。</p>
+<p>在赛车游戏中辅助输入也是以同样的方式与Reward关联在一起，但是在这里为了验证辅助输入是否有能力控制与失败/成功无关的内容特质，作者们设计了一个额外实验，在这一实验中，当辅助输入<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>λ</mi><msub><mi>A</mi><mi>i</mi></msub></msub><mo>&lt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\lambda_{A_i}\lt0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9445399999999999em;vertical-align:-0.2501em;"></span><span class="mord"><span class="mord mathdefault">λ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.32833099999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathdefault mtight">A</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3280857142857143em;"><span style="top:-2.357em;margin-left:0em;margin-right:0.07142857142857144em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mathdefault mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.143em;"><span></span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2501em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&lt;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">0</span></span></span></span>时，赛车的位置高于地面达到某个阈值时Sovler就会得到一个正的Reward，效果如下：</p>
+<img src= "/images/Ripple.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/20210525123850.png" style="zoom:50%;" />
+<p>可以看到<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>λ</mi><msub><mi>A</mi><mi>i</mi></msub></msub><mo>&lt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\lambda_{A_i}\lt0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9445399999999999em;vertical-align:-0.2501em;"></span><span class="mord"><span class="mord mathdefault">λ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.32833099999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathdefault mtight">A</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3280857142857143em;"><span style="top:-2.357em;margin-left:0em;margin-right:0.07142857142857144em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mathdefault mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.143em;"><span></span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2501em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&lt;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">0</span></span></span></span>时会生成崎岖的赛道以使得赛车停留在空中的机会变大，同时作者们还发现辅助输入<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>λ</mi><msub><mi>A</mi><mi>i</mi></msub></msub></mrow><annotation encoding="application/x-tex">\lambda_{A_i}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9445399999999999em;vertical-align:-0.2501em;"></span><span class="mord"><span class="mord mathdefault">λ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.32833099999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathdefault mtight">A</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3280857142857143em;"><span style="top:-2.357em;margin-left:0em;margin-right:0.07142857142857144em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mathdefault mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.143em;"><span></span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2501em;"><span></span></span></span></span></span></span></span></span></span>比起在连续空间[-1,1]中随机取样，离散化后再进行取值可以使生成结果相对稳定。</p>
+<p>另外，在这两种环境中Generator每做出一个动作都会得到一个小的负Reward，这是为了保证生成的环境可以使得Solver尽快地成功/失败。</p>
+<h2 id="结果"><a class="markdownIt-Anchor" href="#结果"></a> 结果</h2>
+<hr />
+<p>本文研究的目的主要需要验证PCG和RL两方面的问题，分别是：</p>
+<ul>
+<li>通过调整辅助输入，Generator是否可以生成有不同风格（不同难度或者说驱使Solver进行不同行为）的环境</li>
+<li>使用ARLPCG训练的Agent是否比其他方法有更强的泛化能力</li>
+</ul>
+<p>为了验证上述问题，本研究采用的方法是，使用另外两个通过其他模型训练出的Agent作为Baseline来进行对比验证，其分别是在固定的环境下和通过随机变量定义的PCG生成的环境下训练的Agent。</p>
+<p>总的来说，在两个环境中Generator都生成了Solver可以解决的、并在一定程度上复杂的关卡，在平台游戏中可以看到Generator生成了类似螺旋楼梯状的关卡，具体效果如下：</p>
+<img src= "/images/Ripple.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/20210525145935.png" style="zoom:50%;" />
+<p>这是为了保证Sovler可以跳上平台，如果不进行螺旋化可能会导致平台间高度相差过大以至于Solver难以学习到如何跳上平台。对于赛车游戏，也可以看到Generator在有障碍物的环境中生成出了合理的赛道，具体效果如下：</p>
+<img src= "/images/Ripple.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/20210525150158.png" style="zoom:50%;" />
+<p>为了进一步说明在ARLPCG框架中自适应的（或者说使用RL的）Agent是有必要的，作者们预训练了一个Agent并使其网络参数固定以来模拟一个脚本AI，在这种情况下，平台跳跃游戏的辅助输入<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>λ</mi><msub><mi>A</mi><mi>i</mi></msub></msub><mo>=</mo><mo>−</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">\lambda_{A_i}=-1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9445399999999999em;vertical-align:-0.2501em;"></span><span class="mord"><span class="mord mathdefault">λ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.32833099999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathdefault mtight">A</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3280857142857143em;"><span style="top:-2.357em;margin-left:0em;margin-right:0.07142857142857144em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mathdefault mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.143em;"><span></span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2501em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">−</span><span class="mord">1</span></span></span></span>的Generator会收敛于生成一个距离比较远的平台以至于Agent无法跳跃到那个生成的平台上，然后把这个Agent替换为自适应的Agent之后这个问题便能得到解决。</p>
+<p>同时，为了进一步了解在不同辅助输入下Generator的生成情况，作者还对生成的内容做了一些量化研究，具体如下：</p>
+<img src= "/images/Ripple.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/20210525164158.png" style="zoom:50%;" />
+<img src= "/images/Ripple.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/20210525164240.png" style="zoom:50%;" />
+<p>接下来，针对上面提到的两个方面的问题进行回答。</p>
+<h3 id="生成具有不同风格的环境"><a class="markdownIt-Anchor" href="#生成具有不同风格的环境"></a> 生成具有不同风格的环境</h3>
+<p>根据上面的所说的一系列内容，我们可以认为在辅助输入不同（如-1，0，1）的情况下生成的环境对于ARLPCG的Agent在难度上是有明显区别的，同时在赛车游戏中添加滞空奖励的额外实验的结果中，我们也可以认为这一模型并不局限于生成不同难度的环境。同时，我们在下图的其他两个Baseline的表现中可以看到，它们也同样在辅助输入值低（我们认为难）的情况下表现较差。</p>
+<img src= "/images/Ripple.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/20210525164034.png" style="zoom:50%;" />
+<p>所以，通过上述两方面的验证，可以认为ARLPCG具有生成不同风格环境的能力。</p>
+<h3 id="arlpcg的agent具有更好的泛化能力"><a class="markdownIt-Anchor" href="#arlpcg的agent具有更好的泛化能力"></a> ARLPCG的Agent具有更好的泛化能力</h3>
+<p>除了上述的两个额外Baseline之外，还添加了一项消融实验，固定ARLPCG的辅助输入<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>λ</mi><msub><mi>A</mi><mi>i</mi></msub></msub><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">\lambda_{A_i}=1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9445399999999999em;vertical-align:-0.2501em;"></span><span class="mord"><span class="mord mathdefault">λ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.32833099999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathdefault mtight">A</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3280857142857143em;"><span style="top:-2.357em;margin-left:0em;margin-right:0.07142857142857144em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mathdefault mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.143em;"><span></span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2501em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">1</span></span></span></span>作为额外的第三个Baseline，在同样的超参、Observation、Action、Reward设置下进行训练后在未曾见过的环境中进行测试，结果如下：</p>
+<img src= "/images/Ripple.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/20210525164321.png" style="zoom:50%;" />
+<img src= "/images/Ripple.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/20210525164350.png" style="zoom:50%;" />
+<p>标中不带有括号的数值均为平均成功率，括号中的数值在平台跳跃游戏中时达到终点的平均步数，赛车游戏则是到达终点的平均时间。可以看到ARLPCG的泛化能力表现最佳。</p>
+<p>值得注意的是在平台跳跃游戏中，Fixed Track的平均步数明显低于其他方法，从表现上来说这种Agent十分自信所以能够更快到达终点，同时也更快走向失败（与其他Agent的相对的谨小慎微相比）笔者认为这是因为这种Agent会过分相信某些动作序列造成的（或许是一种过拟合）</p>
+<h2 id="未来的工作"><a class="markdownIt-Anchor" href="#未来的工作"></a> 未来的工作</h2>
+<hr />
+<p>可以设计多行为/多维的辅助函数与多个Solver组成的Solver群来提高Generator的生成结果的多样性。</p>
+<hr class="footnotes-sep" />
+<section class="footnotes">
+<ol class="footnotes-list">
+<li id="fn1" class="footnote-item"><p>Ling, C., Tollmar, K., &amp; Gisslén, L. (2020, October). Using Deep Convolutional Neural Networks to Detect Rendered Glitches in Video Gam、<br />
+[^]:es. In <em>Proceedings of the AAAI Conference on Artificial Intelligence and Interactive Digital Entertainment</em> (Vol. 16, No. 1, pp. 66-73). <a href="#fnref1" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn2" class="footnote-item"><p>Harmer, J., Gisslén, L., del Val, J., Holst, H., Bergdahl, J., Olsson, T., … &amp; Nordin, M. (2018, August). Imitation learning with concurrent actions in 3d games. In <em>2018 IEEE Conference on Computational Intelligence and Games (CIG)</em> (pp. 1-8). IEEE. <a href="#fnref2" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn3" class="footnote-item"><p>Zheng, Y., Xie, X., Su, T., Ma, L., Hao, J., Meng, Z., … &amp; Fan, C. (2019, November). Wuji: Automatic online combat game testing using evolutionary deep reinforcement learning. In <em>2019 34th IEEE/ACM International Conference on Automated Software Engineering (ASE)</em> (pp. 772-784). IEEE. <a href="#fnref3" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn4" class="footnote-item"><p>Bergdahl, J., Gordillo, C., Tollmar, K., &amp; Gisslén, L. (2020, August). Augmenting automated game testing with deep reinforcement learning. In <em>2020 IEEE Conference on Games (CoG)</em> (pp. 600-603). IEEE. <a href="#fnref4" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn5" class="footnote-item"><p>Risi, S., &amp; Togelius, J. (2020). Increasing generality in machine learning through procedural content generation. <em>Nature Machine Intelligence</em>, <em>2</em>(8), 428-436. <a href="#fnref5" class="footnote-backref">↩︎</a> <a href="#fnref5:1" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn6" class="footnote-item"><p>Khalifa, A., Bontrager, P., Earle, S., &amp; Togelius, J. (2020, October). Pcgrl: Procedural content generation via reinforcement learning. In <em>Proceedings of the AAAI Conference on Artificial Intelligence and Interactive Digital Entertainment</em> (Vol. 16, No. 1, pp. 95-101). <a href="#fnref6" class="footnote-backref">↩︎</a> <a href="#fnref6:1" class="footnote-backref">↩︎</a> <a href="#fnref6:2" class="footnote-backref">↩︎</a> <a href="#fnref6:3" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn7" class="footnote-item"><p>Bontrager, P., &amp; Togelius, J. (2020). Fully differentiable procedural content generation through generative playing networks. <em>arXiv preprint arXiv:2002.05259</em>. <a href="#fnref7" class="footnote-backref">↩︎</a> <a href="#fnref7:1" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn8" class="footnote-item"><p>Wang, R., Lehman, J., Clune, J., &amp; Stanley, K. O. (2019). Paired open-ended trailblazer (poet): Endlessly generating increasingly complex and diverse learning environments and their solutions. <em>arXiv preprint arXiv:1901.01753</em>. <a href="#fnref8" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn9" class="footnote-item"><p>Portelas, R., Colas, C., Hofmann, K., &amp; Oudeyer, P. Y. (2020, May). Teacher algorithms for curriculum learning of deep rl in continuously parameterized environments. In <em>Conference on Robot Learning</em> (pp. 835-853). PMLR. <a href="#fnref9" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn10" class="footnote-item"><p>Uther, W., &amp; Veloso, M. (1997). <em>Adversarial reinforcement learning</em>. Tech. rep., Carnegie Mellon University. Unpublished. <a href="#fnref10" class="footnote-backref">↩︎</a> <a href="#fnref10:1" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn11" class="footnote-item"><p>Pinto, L., Davidson, J., Sukthankar, R., &amp; Gupta, A. (2017, July). Robust adversarial reinforcement learning. In <em>International Conference on Machine Learning</em> (pp. 2817-2826). PMLR. <a href="#fnref11" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn12" class="footnote-item"><p>Justesen, N., Torrado, R. R., Bontrager, P., Khalifa, A., Togelius, J., &amp; Risi, S. (2018). Illuminating generalization in deep reinforcement learning through procedural level generation. <em>arXiv preprint arXiv:1806.10729</em>. <a href="#fnref12" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn13" class="footnote-item"><p>Goodfellow, I. J., Pouget-Abadie, J., Mirza, M., Xu, B., Warde-Farley, D., Ozair, S., … &amp; Bengio, Y. (2014). Generative adversarial networks. <em>arXiv preprint arXiv:1406.2661</em>. <a href="#fnref13" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn14" class="footnote-item"><p>Juliani, A., Berges, V. P., Teng, E., Cohen, A., Harper, J., Elion, C., … &amp; Lange, D. (2018). Unity: A general platform for intelligent agents. <em>arXiv preprint arXiv:1809.02627</em>. <a href="#fnref14" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn15" class="footnote-item"><p>Littman, M. L., &amp; Szepesvári, C. (1996, July). A generalized reinforcement-learning model: Convergence and applications. In <em>ICML</em> (Vol. 96, pp. 310-318). <a href="#fnref15" class="footnote-backref">↩︎</a></p>
+</li>
+</ol>
+</section>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">Kyox24</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://foggyworld.life/posts/43392113/">https://foggyworld.life/posts/43392113/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://foggyworld.life" target="_blank">Foggy World</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/PCG/">PCG</a><a class="post-meta__tags" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">机器学习</a></div><div class="post_share"><div class="social-share" data-image="https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/posts/c9f13a0f/"><img class="next-cover" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/MEMO_toadganwandb.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">TOAD-GAN在Google Colab训练时关于wandb输出的踩坑记录</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span> 相关推荐</span></div><div class="relatedPosts-list"><div><a href="/posts/34633fa0/" title="Bootstrapping Conditional GANs for Video Game Level Generation | 论文笔记"><img class="cover" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/LN_CESAGAN.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-05-04</div><div class="title">Bootstrapping Conditional GANs for Video Game Level Generation | 论文笔记</div></div></a></div><div><a href="/posts/a2e72197/" title="PCGRL：Procedural Content Generation via Reinforcement Learning ｜ 论文笔记"><img class="cover" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/LN_PCGRL3.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-05-02</div><div class="title">PCGRL：Procedural Content Generation via Reinforcement Learning ｜ 论文笔记</div></div></a></div><div><a href="/posts/352bf1e7/" title="PCGBook读书笔记｜第一章 介绍"><img class="cover" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/PCGBOOK_COVER2.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-04-20</div><div class="title">PCGBook读书笔记｜第一章 介绍</div></div></a></div><div><a href="/posts/a05f7909/" title="PCGBook读书笔记｜第二章 基于搜索的手法"><img class="cover" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/PCGBOOK_COVER2.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-04-29</div><div class="title">PCGBook读书笔记｜第二章 基于搜索的手法</div></div></a></div><div><a href="/posts/c79b912d/" title="ML-Agents学习笔记（一）安装·准备"><img class="cover" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/SN_MLAG2.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-09-27</div><div class="title">ML-Agents学习笔记（一）安装·准备</div></div></a></div><div><a href="/posts/86897694/" title="ML-Agents学习笔记（三）3DBall实例之训练新Model"><img class="cover" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/SN_MLAG2.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-10-05</div><div class="title">ML-Agents学习笔记（三）3DBall实例之训练新Model</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="twikoo-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-info-avatar is-center"><img class="avatar-img" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/头像.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/><div class="author-info__name">Kyox24</div><div class="author-info__description">飞蛾扑火</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">24</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">14</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">5</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/kyox24"><i class="fab fa-github"></i><span>Github</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/kyox24" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:kyo19951024@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a><a class="social-icon" href="https://weibo.com/p/1005051882165114" target="_blank" title="Weibo"><i class="fab fa-weibo"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">缓慢搭建中</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text"> 前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%BA%E6%96%87%E4%BF%A1%E6%81%AF"><span class="toc-number">2.</span> <span class="toc-text"> 论文信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A6%82%E8%BF%B0"><span class="toc-number">3.</span> <span class="toc-text"> 概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%95%E8%A8%80"><span class="toc-number">4.</span> <span class="toc-text"> 引言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%B8%E5%85%B3%E7%A0%94%E7%A9%B6"><span class="toc-number">5.</span> <span class="toc-text"> 相关研究</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E5%9C%A8%E6%B8%B8%E6%88%8F%E4%B8%AD%E7%9A%84%E5%BA%94%E7%94%A8"><span class="toc-number">5.1.</span> <span class="toc-text"> 机器学习在游戏中的应用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E5%9C%A8%E6%B8%B8%E6%88%8F%E6%B5%8B%E8%AF%95%E4%B8%AD%E7%9A%84%E5%BA%94%E7%94%A8"><span class="toc-number">5.2.</span> <span class="toc-text"> 机器学习在游戏测试中的应用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E4%B8%8Epcg"><span class="toc-number">5.3.</span> <span class="toc-text"> 机器学习与PCG</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AF%B9%E6%8A%97%E6%80%A7%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0arl"><span class="toc-number">5.4.</span> <span class="toc-text"> 对抗性强化学习（ARL）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A8%A1%E5%9E%8B"><span class="toc-number">6.</span> <span class="toc-text"> 模型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A8%A1%E5%9E%8B%E6%80%BB%E8%BF%B0"><span class="toc-number">6.1.</span> <span class="toc-text"> 模型总述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#generator"><span class="toc-number">6.2.</span> <span class="toc-text"> Generator</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%BE%85%E5%8A%A9%E8%BE%93%E5%85%A5"><span class="toc-number">6.2.1.</span> <span class="toc-text"> 辅助输入</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#reward%E7%BB%93%E6%9E%84"><span class="toc-number">6.2.2.</span> <span class="toc-text"> Reward结构</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#solver"><span class="toc-number">6.3.</span> <span class="toc-text"> Solver</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%8E%AF%E5%A2%83"><span class="toc-number">7.</span> <span class="toc-text"> 环境</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%87%87%E7%94%A8%E7%9A%84representation"><span class="toc-number">7.1.</span> <span class="toc-text"> 采用的Representation</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B5%9B%E8%BD%A6%E6%B8%B8%E6%88%8F"><span class="toc-number">7.2.</span> <span class="toc-text"> 赛车游戏</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%B8%89%E4%BA%BA%E7%A7%B0%E5%B9%B3%E5%8F%B0%E8%B7%B3%E8%B7%83%E6%B8%B8%E6%88%8F"><span class="toc-number">7.3.</span> <span class="toc-text"> 第三人称平台跳跃游戏</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%AD%E7%BB%83"><span class="toc-number">8.</span> <span class="toc-text"> 训练</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B3%E4%BA%8Ereward-function%E5%92%8C%E8%BE%85%E5%8A%A9%E8%BE%93%E5%85%A5%E5%9C%A8%E8%AE%AD%E7%BB%83%E4%B8%AD%E7%9A%84%E8%BF%9B%E4%B8%80%E6%AD%A5%E8%AF%B4%E6%98%8E"><span class="toc-number">8.1.</span> <span class="toc-text"> 关于Reward Function和辅助输入在训练中的进一步说明</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%93%E6%9E%9C"><span class="toc-number">9.</span> <span class="toc-text"> 结果</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%94%9F%E6%88%90%E5%85%B7%E6%9C%89%E4%B8%8D%E5%90%8C%E9%A3%8E%E6%A0%BC%E7%9A%84%E7%8E%AF%E5%A2%83"><span class="toc-number">9.1.</span> <span class="toc-text"> 生成具有不同风格的环境</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#arlpcg%E7%9A%84agent%E5%85%B7%E6%9C%89%E6%9B%B4%E5%A5%BD%E7%9A%84%E6%B3%9B%E5%8C%96%E8%83%BD%E5%8A%9B"><span class="toc-number">9.2.</span> <span class="toc-text"> ARLPCG的Agent具有更好的泛化能力</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%AA%E6%9D%A5%E7%9A%84%E5%B7%A5%E4%BD%9C"><span class="toc-number">10.</span> <span class="toc-text"> 未来的工作</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/posts/43392113/" title="Adversarial Reinforcement Learning for Procedural Content Generation | 论文笔记"><img data-lazy-src="https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Adversarial Reinforcement Learning for Procedural Content Generation | 论文笔记"/></a><div class="content"><a class="title" href="/posts/43392113/" title="Adversarial Reinforcement Learning for Procedural Content Generation | 论文笔记">Adversarial Reinforcement Learning for Procedural Content Generation | 论文笔记</a><time datetime="2021-05-25T07:58:48.000Z" title="发表于 2021-05-25 16:58:48">2021-05-25</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/c9f13a0f/" title="TOAD-GAN在Google Colab训练时关于wandb输出的踩坑记录"><img data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/MEMO_toadganwandb.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="TOAD-GAN在Google Colab训练时关于wandb输出的踩坑记录"/></a><div class="content"><a class="title" href="/posts/c9f13a0f/" title="TOAD-GAN在Google Colab训练时关于wandb输出的踩坑记录">TOAD-GAN在Google Colab训练时关于wandb输出的踩坑记录</a><time datetime="2021-05-17T15:45:00.000Z" title="发表于 2021-05-18 00:45:00">2021-05-18</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/29b10db/" title="SinGAN：Learning a Generative Model from a Single Natural Image | 论文笔记"><img data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/LN_SINGAN.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="SinGAN：Learning a Generative Model from a Single Natural Image | 论文笔记"/></a><div class="content"><a class="title" href="/posts/29b10db/" title="SinGAN：Learning a Generative Model from a Single Natural Image | 论文笔记">SinGAN：Learning a Generative Model from a Single Natural Image | 论文笔记</a><time datetime="2021-05-16T14:56:44.000Z" title="发表于 2021-05-16 23:56:44">2021-05-16</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/dba5fd70/" title="one-hot编码和batch normalization的关系"><img data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/MEMO_ONEHOT.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="one-hot编码和batch normalization的关系"/></a><div class="content"><a class="title" href="/posts/dba5fd70/" title="one-hot编码和batch normalization的关系">one-hot编码和batch normalization的关系</a><time datetime="2021-05-12T02:12:49.000Z" title="发表于 2021-05-12 11:12:49">2021-05-12</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/2a127db8/" title="PyTorch中nn.Embedding相关备忘"><img data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/MEMO_PY_EM.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="PyTorch中nn.Embedding相关备忘"/></a><div class="content"><a class="title" href="/posts/2a127db8/" title="PyTorch中nn.Embedding相关备忘">PyTorch中nn.Embedding相关备忘</a><time datetime="2021-05-11T14:54:03.000Z" title="发表于 2021-05-11 23:54:03">2021-05-11</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2021 By Kyox24</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="translateLink" type="button" title="简繁转换">繁</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module"></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload/dist/lazyload.iife.min.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><div class="js-pjax"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css"><script src="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.js"></script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.css"><script>(() => {
+  document.querySelectorAll('#article-container span.katex-display').forEach(item => {
+    btf.wrap(item, 'div', '', 'katex-wrap')
+  })
+})()</script><script>if (document.getElementsByClassName('mermaid').length) {
+  if (window.mermaidJsLoad) mermaid.init()
+  else {
+    getScript('https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js').then(() => {
+      window.mermaidJsLoad = true
+      mermaid.initialize({
+        theme: 'default',
+      })
+      false && mermaid.init()
+    })
+  }
+}</script><script>(()=>{
+  const $countDom = document.getElementById('twikoo-count')
+  const init = () => {
+    twikoo.init(Object.assign({
+      el: '#twikoo-wrap',
+      envId: 'blog-comment-7ggp4lbmaeda677f',
+      region: ''
+    }, null))
+  }
+
+  const getCount = () => {
+    twikoo.getCommentsCount({
+      envId: 'blog-comment-7ggp4lbmaeda677f',
+      region: '',
+      urls: [window.location.pathname],
+      includeReply: false
+    }).then(function (res) {
+      $countDom.innerText = res[0].count
+    }).catch(function (err) {
+      console.error(err);
+    });
+  }
+
+  const loadTwikoo = (bool = false) => {
+    if (typeof twikoo === 'object') {
+      init()
+      bool && $countDom && setTimeout(getCount,0)
+    } else {
+      getScript('https://cdn.jsdelivr.net/npm/twikoo/dist/twikoo.all.min.js').then(()=> {
+        init()
+        bool && $countDom && setTimeout(getCount,0)
+      })
+    }
+  }
+
+  if ('Twikoo' === 'Twikoo' || !true) {
+    if (true) btf.loadComment(document.getElementById('twikoo-wrap'), loadTwikoo)
+    else loadTwikoo(true)
+  } else {
+    window.loadOtherComment = () => {
+      loadTwikoo()
+    }
+  }
+})()</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
