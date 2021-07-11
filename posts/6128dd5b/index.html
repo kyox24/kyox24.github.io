@@ -1,0 +1,514 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Pairing Character Classes in a Deathmatch Shooter Game via a Deep-Learning Surrogate Model | 论文笔记 | Foggy World</title><meta name="keywords" content="PCG,机器学习"><meta name="author" content="Kyox24"><meta name="copyright" content="Kyox24"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="本研究提出了一种不直接使用机器学习来生成FPS游戏职业数值的方法">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Pairing Character Classes in a Deathmatch Shooter Game via a Deep-Learning Surrogate Model | 论文笔记">
+<meta property="og:url" content="https://foggyworld.life/posts/6128dd5b/index.html">
+<meta property="og:site_name" content="Foggy World">
+<meta property="og:description" content="本研究提出了一种不直接使用机器学习来生成FPS游戏职业数值的方法">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/kyox24/PicBed/DSGbyDL.png">
+<meta property="article:published_time" content="2021-07-11T09:44:28.000Z">
+<meta property="article:modified_time" content="2021-07-11T09:44:28.153Z">
+<meta property="article:author" content="Kyox24">
+<meta property="article:tag" content="PCG">
+<meta property="article:tag" content="机器学习">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/kyox24/PicBed/DSGbyDL.png"><link rel="shortcut icon" href="/images/GAME%20CONSOLE.png"><link rel="canonical" href="https://foggyworld.life/posts/6128dd5b/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//fonts.googleapis.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web&amp;display=swap" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#2d3035","position":"bottom-left"},
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isanchor: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2021-07-11 18:44:28'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          const now = new Date()
+          const hour = now.getHours()
+          const isNight = hour <= 6 || hour >= 18
+          if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+          else if (t === 'light') activateLightMode()
+          else activateDarkMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    })(window)</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.css"><link rel="stylesheet" href="/style/showbb_in_index.css"><meta name="generator" content="Hexo 5.4.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="author-avatar"><img class="avatar-img" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/头像.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">26</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">14</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/bb/"><i class="fa-fw fas fa-quote-left"></i><span> 自言自语</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于我</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Foggy World</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/bb/"><i class="fa-fw fas fa-quote-left"></i><span> 自言自语</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于我</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">Pairing Character Classes in a Deathmatch Shooter Game via a Deep-Learning Surrogate Model | 论文笔记</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-07-11T09:44:28.000Z" title="发表于 2021-07-11 18:44:28">2021-07-11</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-07-11T09:44:28.153Z" title="更新于 2021-07-11 18:44:28">2021-07-11</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/">论文笔记</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Pairing Character Classes in a Deathmatch Shooter Game via a Deep-Learning Surrogate Model | 论文笔记"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div><article class="post-content" id="article-container"><h2 id="论文信息"><a class="markdownIt-Anchor" href="#论文信息"></a> 论文信息</h2>
+<hr />
+<p><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2103.15451">Pairing Character Classes in a Deathmatch Shooter Game via a Deep-Learning Surrogate Model</a></p>
+<h2 id="概述"><a class="markdownIt-Anchor" href="#概述"></a> 概述</h2>
+<hr />
+<p>本研究提出了一种不直接使用机器学习来生成FPS游戏职业数值的方法。牵涉到了基于元胞自动机进行FPS游戏地图生成、使用CNN预测游戏结果和使用进化算法生成生成FPS游戏职业数值。</p>
+<h2 id="引言"><a class="markdownIt-Anchor" href="#引言"></a> 引言</h2>
+<hr />
+<p>在设计射击游戏的关卡时，游戏设计师或者老玩家都很容易通过关卡的鸟瞰图（top-down map）来判断咽喉点（choke points）和增益道具的分布是否合理。</p>
+<p>基于一些游戏设计方面的专门知识，很多研究者已经找到了一些关键的游戏模式和关卡设计中的重要模式。甚至也有许多研究注目于如何定量地计算一个游戏关卡的各项指标，以来判定某个有多“好”。但很显然这是十分具有争议的，不仅是因为很多游戏中的指标本身就难以计算，还因为对于不同的游戏关卡使用统一判定标准的这一做法的合理性也有待商榷。</p>
+<p>另一方面，关卡设计仅仅是游戏包含的众多元素中的一个而已，其他元素在游戏中也扮演着很重要的角色，如音效对与一些恐怖游戏而言甚至比关卡设计还要重要。一位成熟的游戏设计者能够了解游戏中各个元素发生变化时对玩家体验造成的影响，而这种内在关系很难通过计算来捕捉。</p>
+<p>本文的提出了一个可以学习关卡设计、游戏数值设计和游戏结果之间关系的系统。十分类似人类设计师的感知，使用CNN处理关卡的图像信息（关卡的鸟瞰图），并使用游戏内数值作为辅助输入，预测游戏的结果和持续时间，并基于其为游戏的平衡性做出调整。</p>
+<h2 id="相关研究"><a class="markdownIt-Anchor" href="#相关研究"></a> 相关研究</h2>
+<hr />
+<ul>
+<li>
+<p><a target="_blank" rel="noopener" href="https://www.um.edu.mt/library/oar/handle/123456789/29473">Computational game creativity</a></p>
+<ul>
+<li>主要确立了定量评价游戏的六个方面，即视觉、音效、叙事、关卡设计、规则和游戏性</li>
+</ul>
+</li>
+<li>
+<p><a target="_blank" rel="noopener" href="https://graphics.tudelft.nl/Publications-new/2015/LBNPY15/">Creativity facet orchestration: the Whys and the Hows</a></p>
+<ul>
+<li>主要阐述了在定量评价游戏时，如何有机地同时评价两个以上的方面</li>
+</ul>
+</li>
+<li>
+<p><a target="_blank" rel="noopener" href="https://ieeexplore.ieee.org/document/6032019">Multi-faceted evolution of simple arcade games</a></p>
+<ul>
+<li>主要阐述了如何使用进化算法同时对游戏规则和关卡进行进化</li>
+</ul>
+</li>
+<li>
+<p><a target="_blank" rel="noopener" href="https://arxiv.org/abs/1603.00930">Super Mario as a String: Platformer Level Generation Via LSTMs</a></p>
+<ul>
+<li>主要阐述了如何使用LSTM进行SMB的关卡生成</li>
+</ul>
+</li>
+<li>
+<p><a target="_blank" rel="noopener" href="https://www.semanticscholar.org/paper/Predicting-resource-locations-in-game-maps-using-Lee-Isaksen/75010526a2ce8f9cbbf28d46e8462be24e9c0b5a">Predicting resource locations in game maps using deep convolutional neural networks</a></p>
+<ul>
+<li>主要阐述了如何使用CNN对星际争霸2的资源分布进行预测</li>
+</ul>
+</li>
+<li>
+<p><a target="_blank" rel="noopener" href="https://ieee-cog.org/2019/papers/paper_232.pdf">Autoencoders for Level Generation, Repair, and Recognition</a></p>
+<ul>
+<li>主要阐述了如何使用autoencoders学习SMB的关卡结构，并使用其对有缺陷的关卡进行修复</li>
+</ul>
+</li>
+<li>
+<p><a target="_blank" rel="noopener" href="https://www.researchgate.net/publication/323906440_Deep_static_and_dynamic_level_analysis_A_study_on_infinite_mario">Deep static and dynamic level analysis: A study on infinite mario</a></p>
+<ul>
+<li>主要阐述了如何使用CNN预测SMB的难度和有趣程度等指标</li>
+</ul>
+</li>
+<li>
+<p><a target="_blank" rel="noopener" href="https://www.semanticscholar.org/paper/Learning-the-patterns-of-balance-in-a-multi-player-Karavolos-Liapis/19afddb840d0129efcb16f8110377641294fd96c">Learning the patterns of balance in a multi-player shooter game</a></p>
+<ul>
+<li>主要阐述了如何使用CNN进行多人射击游戏的数值平衡</li>
+</ul>
+</li>
+<li>
+<p><a target="_blank" rel="noopener" href="https://www.semanticscholar.org/paper/Towards-a-Generic-Method-of-Evaluating-Game-Levels-Liapis-Yannakakis/b6fa972f247f2d9c66942ff4e2f9b4eeb1f0ecb9">Towards a Generic Method of Evaluating Game Levels</a></p>
+<ul>
+<li>主要阐述了如何设计通用的fitness fuction来为不同类型的游戏进行PCG</li>
+</ul>
+</li>
+<li>
+<p><a target="_blank" rel="noopener" href="https://www.semanticscholar.org/paper/Procedural-weapons-generation-for-unreal-tournament-Gravina-Loiacono/9e99ee50dedce0df8874b19e151d8fbc5c8664cf">Procedural weapons generation for unreal tournament III</a></p>
+<ul>
+<li>主要阐述了如何为FPS游戏进行武器的PCG</li>
+</ul>
+</li>
+<li>
+<p><a target="_blank" rel="noopener" href="https://www.semanticscholar.org/paper/Constrained-surprise-search-for-content-generation-Gravina-Liapis/833d5c209f21204b3d616ad73373d44b16407c86">Constrained Surprise Search for Content Generation</a></p>
+<ul>
+<li>主要阐述了一种基于进化算法的，以带来玩家“惊喜”为目的的生成FPS游戏武器的方法</li>
+</ul>
+</li>
+<li>
+<p><a target="_blank" rel="noopener" href="https://www.semanticscholar.org/paper/Using-a-Surrogate-Model-of-Gameplay-for-Automated-Karavolos-Liapis/bc256ba26fa5ba9a08a5573c1dca90e9ca117be7">Using a Surrogate Model of Gameplay for Automated Level Design</a></p>
+<ul>
+<li>（本文同作者）主要阐述了在FPS中通过CNN预测比赛结果来为特定的一组职业进行数值平衡</li>
+</ul>
+</li>
+<li>
+<p><a target="_blank" rel="noopener" href="https://www.researchgate.net/publication/220867335_Evolving_Interesting_Maps_for_a_First_Person_Shooter">Evolving Interesting Maps for a First Person Shooter</a></p>
+<ul>
+<li>主要阐述了如何使用基于搜索的方法生成FPS游戏地图</li>
+</ul>
+</li>
+<li>
+<p><a target="_blank" rel="noopener" href="https://www.researchgate.net/publication/286765272_Evolving_maps_for_match_balancing_in_first_person_shooters">Evolving maps for match balancing in first person shooters</a></p>
+<ul>
+<li>主要阐述了如何使用生成FPS游戏地图的方法来平衡双方战力</li>
+</ul>
+</li>
+</ul>
+<h2 id="游戏框架"><a class="markdownIt-Anchor" href="#游戏框架"></a> 游戏框架</h2>
+<hr />
+<p>本文将会使用1v1的死亡竞赛模式的FPS游戏作为实验对象，游戏会在两方总共杀死人数20人时结束，击杀较多人的一方获胜，游戏中有着不同的职业，例如军团要塞中的医生、狙击手等。</p>
+<h3 id="关卡"><a class="markdownIt-Anchor" href="#关卡"></a> 关卡</h3>
+<p>本文中的所有比赛都是在有两层架构的关卡中进行的。</p>
+<h4 id="地图属性"><a class="markdownIt-Anchor" href="#地图属性"></a> 地图属性</h4>
+<p>本文中的关卡地图都基于一个<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mn>20</mn><mo>×</mo><mn>20</mn></mrow><annotation encoding="application/x-tex">20 \times 20</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">2</span><span class="mord">0</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">2</span><span class="mord">0</span></span></span></span>的网格，每个地块（网格中的一个格子）代表一个有特定高度的地形或者一个增益道具。不同高度的地块组成了玩家可以行走的楼层，由地面高度的地块组成是最常见的，玩家也都在这类地块上出生。玩家可以通过楼梯到达一层楼高度的地块，同时玩家可以在一层楼地块的边缘位置跳跃到相邻的地面高度的地块（即从一楼到地面），比一层楼更高高度的地块则扮演着墙的角色，玩家与玩家的子弹都无法通过墙体。增益道具由：</p>
+<ul>
+<li>双倍伤害，暂时增加玩家武器的伤害</li>
+<li>治疗，恢复玩家100HP</li>
+<li>护甲，提供额外的50HP，这些HP会在玩家失去任何实际的HP之前提前消耗殆尽</li>
+</ul>
+<p>增益道具一旦被获取，都会在一段时间后重新出现。最后，如下图，玩家总是从地图的不同角落出生，玩家的出身点被彩色标出且总是在地面：</p>
+<img src= "/images/Ripple.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/20210707011121.png" style="zoom:50%;" />
+<h4 id="cnn网络的输入"><a class="markdownIt-Anchor" href="#cnn网络的输入"></a> CNN网络的输入</h4>
+<div class="note warning flat"><p>ch8实在没能理解…若有了新的理解再更新</p>
+</div>
+<p>使用<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mn>20</mn><mo>×</mo><mn>20</mn></mrow><annotation encoding="application/x-tex">20 \times 20</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">2</span><span class="mord">0</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">2</span><span class="mord">0</span></span></span></span>的地图的one-hot编码作为CNN网络的输入，具体如下：</p>
+<ul>
+<li>ch1~ch3：三种不同高度的地块</li>
+<li>ch4：楼梯</li>
+<li>ch5~ch7：三种不同增益道具</li>
+<li>ch8：cover，在本研究中被忽略</li>
+</ul>
+<h4 id="关卡生成"><a class="markdownIt-Anchor" href="#关卡生成"></a> 关卡生成</h4>
+<div class="note warning flat"><p>这里原文中也只提到了&quot;path&quot;即路径一次，对于具体如何分别生成地面和一楼的地块似乎并无进一步说明</p>
+</div>
+<p>本文中使用了一种基于代理的分成生成方法来生成关卡地图，具体流程如下：</p>
+<ul>
+<li>首先使用两个代理，分别从最终地图的<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mn>4</mn><mo>×</mo><mn>4</mn></mrow><annotation encoding="application/x-tex">4 \times 4</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">4</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">4</span></span></span></span>大小的草图的右上、左下出发向对角线方向挖掘路径</li>
+<li>把草图中的每个地块都放大为<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mn>5</mn><mo>×</mo><mn>5</mn></mrow><annotation encoding="application/x-tex">5 \times 5</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">5</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">5</span></span></span></span>，以得到最后<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mn>20</mn><mo>×</mo><mn>20</mn></mrow><annotation encoding="application/x-tex">20 \times 20</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">2</span><span class="mord">0</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">2</span><span class="mord">0</span></span></span></span>大小的地图，空的部分都会被初始化为墙体</li>
+<li>使用一个随机代理把因为放大而断裂的路径连接起来</li>
+<li>在地面和一楼地块的交界处以20%的几率放置楼梯</li>
+<li>使用元胞自动机调整地面与一楼地块区域的形状并基于一楼地块的模式生成墙体</li>
+<li>最后由<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mn>4</mn><mo>×</mo><mn>4</mn></mrow><annotation encoding="application/x-tex">4 \times 4</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">4</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">4</span></span></span></span>的草图单元放大来的每个单元区域都有33%的可能性包含有增益道具，若有的话会随机放置在地面或者一楼</li>
+</ul>
+<h3 id="游戏数值设定"><a class="markdownIt-Anchor" href="#游戏数值设定"></a> 游戏数值设定</h3>
+<p>本文的目的是自动调整游戏的平衡性，具体则表现为对游戏中各职业的数值的调整，一个职业的数值有以下8种：</p>
+<ul>
+<li>HP</li>
+<li>移动速度</li>
+<li>专用武器的每次射击的伤害</li>
+<li>准确度，即弹道扩散</li>
+<li>射速</li>
+<li>弹匣大小</li>
+<li>每次射击发射的子弹数量</li>
+<li>射程</li>
+</ul>
+<p>游戏中玩家将会有无限的备用弹匣，以及相同的换弹时间，每个玩家只会使用本职业的武器，同时没有额外的武器。</p>
+<p>在产生模拟的游戏结果语料库的时候，为了实例化新的职业，每个职业的数值都被事先定义了一个范围（以《军团要塞2》为参考），每次都在这些范围内产生一个新的值，其中射程是例外，可能的值为离散的只有长、中、短三个可能的取值。最后，再实验中作为输入数据这些参数会再次被最小-最大标准化为[0, 1]。</p>
+<h3 id="模拟比赛"><a class="markdownIt-Anchor" href="#模拟比赛"></a> 模拟比赛</h3>
+<p>本文使用模拟比赛的方法来产生一个将职业数值和地图结构映射到比赛结果的语料库。具体做法是使用了两个基于行为树控制的代理来进行模拟比赛并产生比赛结果，按照优先级从高到低，可以把代理的行为简单归纳如下：</p>
+<ul>
+<li>如果血量低则寻找恢复道具</li>
+<li>如果附近有增益道具则拾取</li>
+<li>如果看到对手则攻击对手</li>
+<li>搜索远处的增益道具</li>
+</ul>
+<p>虽然这些基本逻辑十分直白，但是代理在游戏中的行为足够复杂，可以作为人类玩家的一个近似。</p>
+<h2 id="训练模型"><a class="markdownIt-Anchor" href="#训练模型"></a> 训练模型</h2>
+<hr />
+<p>在这节中主要分析了如何使用不同的模型对模拟比赛的语料库进行学习，其中性能最佳的模型将会被用于产生职业数值。</p>
+<h3 id="训练数据"><a class="markdownIt-Anchor" href="#训练数据"></a> 训练数据</h3>
+<p>本文中使用的训练数据集是前面提到的模拟比赛结果，共有20万场比赛的结果。具体的收集数据方法如下：</p>
+<ul>
+<li>使用上面提到的生成地图方法和生成职业数值方法，生成10万组<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo fence="true">[</mo><mi mathvariant="normal">地</mi><mi mathvariant="normal">图</mi><mi mathvariant="normal">，</mi><mi mathvariant="normal">两</mi><mi mathvariant="normal">个</mi><mi mathvariant="normal">职</mi><mi mathvariant="normal">业</mi><mi mathvariant="normal">数</mi><mi mathvariant="normal">值</mi><mo fence="true">]</mo></mrow><annotation encoding="application/x-tex">\left[地图，两个职业数值\right]</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;">[</span><span class="mord cjk_fallback">地</span><span class="mord cjk_fallback">图</span><span class="mord cjk_fallback">，</span><span class="mord cjk_fallback">两</span><span class="mord cjk_fallback">个</span><span class="mord cjk_fallback">职</span><span class="mord cjk_fallback">业</span><span class="mord cjk_fallback">数</span><span class="mord cjk_fallback">值</span><span class="mclose delimcenter" style="top:0em;">]</span></span></span></span></span>的数据，对每一组数据进行两次模拟比赛</li>
+<li>第一次模拟比赛将被设置为，代理 A 使用职业数值A在地图左下出生，代理 B 使用职业数值B在地图右上出生</li>
+<li>第二次模拟比赛使代理 A和 代理 B 的位置互换</li>
+</ul>
+<p>每场模拟比赛都在总共杀死20人之后结束，并记录比赛的持续时间和每个代理的击杀率。在这种情况下有些比赛无法在规定时间内完成，这部分数据会从训练数据中剔除（占总数据的6%）。</p>
+<p>以下是代理 A 的击杀率和游戏持续时间的分布情况：</p>
+<img src= "/images/Ripple.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/20210708150156.png" style="zoom:50%;" />
+<p>可以从击杀率的图像中看到极端优势和极端劣势情况都较少，剩余的相对势均力敌的比赛分布也都相对均匀，这表明这是一个有着多样情况的数据集。从持续时间的图像中可以看到大多数的比赛都持续了300秒左右。</p>
+<h3 id="卷积神经网络架构"><a class="markdownIt-Anchor" href="#卷积神经网络架构"></a> 卷积神经网络架构</h3>
+<p>本文中使用的的CNN结构是根据初步实验<sup class="footnote-ref"><a href="#fn1" id="fnref1">[1]</a></sup><sup class="footnote-ref"><a href="#fn2" id="fnref2">[2]</a></sup>中得出的性能最好的架构。该架构中的激活函数都为ELU，且整体架构由以下两部分组成：</p>
+<ul>
+<li>处理职业数值部分由单一的由8个结点的全连接层组成，该层负责将16个职业数值（两个代理的职业各有上文中提到的8种数值）转换为8个特征值</li>
+<li>处理关卡结构（地图）的部分由两个block组成，每个block都由一个卷积层和一个最大池化层组成，第一个block有16个filter，第二个则有32个filter，每个卷积层的kernel size都统一为<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mn>5</mn><mo>×</mo><mn>5</mn></mrow><annotation encoding="application/x-tex">5 \times 5</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">5</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">5</span></span></span></span>，并使用零padding保证输入和输出大小相同（即两个block的stride不同），第二个block的输出会被扁平化为一个大小为800的特征值向量</li>
+</ul>
+<p>最后，把两部分的输出串联到一起交由一个有128个节点的全连接层处理，输出为：</p>
+<ul>
+<li>代理 A 的击杀率</li>
+<li>游戏持续时间</li>
+</ul>
+<h3 id="模型验证"><a class="markdownIt-Anchor" href="#模型验证"></a> 模型验证</h3>
+<p>本文使用了以下四种模型进行了实验：</p>
+<ul>
+<li>CNN，卷积神经网络具体架构如上文所述</li>
+<li>MLP，多层感知机，就MLP的架构也做了多次实验为了叙述上的简洁，这里只讨论结果最好的MLP，结构为单层的16个激活函数为ELU的节点</li>
+<li>Perceptron，感知机</li>
+<li>LR，线性回归</li>
+</ul>
+<div class="note warning flat"><p>MAE是平均绝对误差，<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msup><mi>R</mi><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">R^2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141079999999999em;vertical-align:0em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.00773em;">R</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span></span></span></span> 简单来说描述了真实值的多少的变化可以被预测值捕获到，具体可以查看<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E5%86%B3%E5%AE%9A%E7%B3%BB%E6%95%B0">决定系数 wiki</a></p>
+</div>
+<p>每个模型都被训练了100个epoch，并使用MAE 和<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msup><mi>R</mi><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">R^2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141079999999999em;vertical-align:0em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.00773em;">R</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span></span></span></span> 来评价模型，数据总量的10%用来做验证，具体结果如下：</p>
+<img src= "/images/Ripple.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/20210708160849.png" style="zoom:50%;" />
+<p>其中下标t代表游戏时长，下标s代表代理 A 的击杀率。首先从上表中可以注意到所有模型（哪怕是十分简单的模型）都在预测代理 A 的击杀率时表现不错且差别不算特别大，但在预测游戏时长时表现较为不佳。简单的模型也能取得不错的表现的一个可能原因是，输入和输出有着明显的皮尔逊相关性。另一个可能原因则是在游戏时间上，真实值集中分布在平均值附近，这导致模型在预测时不会得到很大的惩罚。尽管CNN和MLP的表现差别不大，但考虑到CNN可以实现许多基于图像的可视化，所以再接下来的实验中将会使用CNN。</p>
+<h2 id="生成职业数值"><a class="markdownIt-Anchor" href="#生成职业数值"></a> 生成职业数值</h2>
+<hr />
+<p>本文使用了进化算法来创建一套“适合”特定关卡的职业数值，但不改变关卡结构本身。显然这里的“适合”是由这套系统的使用者（游戏设计师）来定义的，由于本次的模型输出为击杀率和持续时间，所以最直接的方法就是通过设定这两个指标来进行对“适合”的定义。本文通过不断最小化以下的函数来达成生成“适合”的关卡的目的：</p>
+<p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>F</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mo>=</mo><msqrt><mrow><mo stretchy="false">(</mo><mi>t</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mo>−</mo><msub><mi>d</mi><mi>t</mi></msub><msup><mo stretchy="false">)</mo><mn>2</mn></msup><mo>+</mo><mo stretchy="false">(</mo><mi>s</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mo>−</mo><msub><mi>d</mi><mi>s</mi></msub><msup><mo stretchy="false">)</mo><mn>2</mn></msup></mrow></msqrt></mrow><annotation encoding="application/x-tex">F(x)=\sqrt{(t(x)-d_t)^2+(s(x)-d_s)^2}
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.13889em;">F</span><span class="mopen">(</span><span class="mord mathdefault">x</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1.24em;vertical-align:-0.25612499999999994em;"></span><span class="mord sqrt"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.983875em;"><span class="svg-align" style="top:-3.2em;"><span class="pstrut" style="height:3.2em;"></span><span class="mord" style="padding-left:1em;"><span class="mopen">(</span><span class="mord mathdefault">t</span><span class="mopen">(</span><span class="mord mathdefault">x</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mord"><span class="mord mathdefault">d</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2805559999999999em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose"><span class="mclose">)</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.740108em;"><span style="top:-2.9890000000000003em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mopen">(</span><span class="mord mathdefault">s</span><span class="mopen">(</span><span class="mord mathdefault">x</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mord"><span class="mord mathdefault">d</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.151392em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">s</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose"><span class="mclose">)</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.740108em;"><span style="top:-2.9890000000000003em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span></span></span><span style="top:-2.9438750000000002em;"><span class="pstrut" style="height:3.2em;"></span><span class="hide-tail" style="min-width:1.02em;height:1.28em;"><svg width='400em' height='1.28em' viewBox='0 0 400000 1296' preserveAspectRatio='xMinYMin slice'><path d='M263,681c0.7,0,18,39.7,52,119c34,79.3,68.167,
+158.7,102.5,238c34.3,79.3,51.8,119.3,52.5,120c340,-704.7,510.7,-1060.3,512,-1067
+c4.7,-7.3,11,-11,19,-11H40000v40H1012.3s-271.3,567,-271.3,567c-38.7,80.7,-84,
+175,-136,283c-52,108,-89.167,185.3,-111.5,232c-22.3,46.7,-33.8,70.3,-34.5,71
+c-4.7,4.7,-12.3,7,-23,7s-12,-1,-12,-1s-109,-253,-109,-253c-72.7,-168,-109.3,
+-252,-110,-252c-10.7,8,-22,16.7,-34,26c-22,17.3,-33.3,26,-34,26s-26,-26,-26,-26
+s76,-59,76,-59s76,-60,76,-60z M1001 80H40000v40H1012z'/></svg></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.25612499999999994em;"><span></span></span></span></span></span></span></span></span></span></p>
+<p>其中<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>d</mi><mi>t</mi></msub></mrow><annotation encoding="application/x-tex">d_t</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.84444em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault">d</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2805559999999999em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>和<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>d</mi><mi>s</mi></msub></mrow><annotation encoding="application/x-tex">d_s</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.84444em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault">d</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.151392em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">s</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>分别是设定的游戏时长和击杀率的期望值，<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>t</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">t(x)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault">t</span><span class="mopen">(</span><span class="mord mathdefault">x</span><span class="mclose">)</span></span></span></span>和<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>s</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">s(x)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault">s</span><span class="mopen">(</span><span class="mord mathdefault">x</span><span class="mclose">)</span></span></span></span>是CNN网络的预测值。</p>
+<p>在生成职业数值的实验中使用的关卡如下图，由两部分组成，第一行是由生成器生成的，第二行是人类设计的：</p>
+<img src= "/images/Ripple.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/20210708173221.png" style="zoom:50%;" />
+<p>可以看到人类设计的关卡表现出一定程度的对称性，并且出身点到各个增益装置的平衡性也更好。除此之外还有一些明确的主题，如竞技场，咽喉点等。</p>
+<p>本文中希望生成的关卡的相关指标如下：</p>
+<ul>
+<li>击杀率<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>d</mi><mi>s</mi></msub><mo>=</mo><mn>0.5</mn></mrow><annotation encoding="application/x-tex">d_s=0.5</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.84444em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault">d</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.151392em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">s</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">0</span><span class="mord">.</span><span class="mord">5</span></span></span></span></li>
+<li>游戏时长则有三种情况
+<ul>
+<li>长，<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>d</mi><mi>t</mi></msub></mrow><annotation encoding="application/x-tex">d_t</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.84444em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault">d</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2805559999999999em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> = 600秒</li>
+<li>中，<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>d</mi><mi>t</mi></msub></mrow><annotation encoding="application/x-tex">d_t</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.84444em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault">d</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2805559999999999em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> = 300秒</li>
+<li>短，<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>d</mi><mi>t</mi></msub></mrow><annotation encoding="application/x-tex">d_t</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.84444em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault">d</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2805559999999999em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> = 200秒</li>
+</ul>
+</li>
+</ul>
+<p>将使用进化算法总共进行60组实验，即上图中的20个关卡，对每个关卡进行三组不同指标（三个不同游戏时长）的实验。从随机初始化的100个个体开始进化100代，one-point crossover的概率为20%，突变的概率为10%，除了武器射程外的数值的突变，都是通过增加一个由<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi mathvariant="script">N</mi><mo>∼</mo><mo stretchy="false">(</mo><mn>0</mn><mo separator="true">,</mo><mtext> </mtext><mn>0.1</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\mathcal{N}\sim(0,\ 0.1)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord"><span class="mord mathcal" style="margin-right:0.14736em;">N</span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">∼</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord">0</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mspace"> </span><span class="mord">0</span><span class="mord">.</span><span class="mord">1</span><span class="mclose">)</span></span></span></span>产生的随机数来进行的。武器射程则是随机地变化为其他两个可能的值之一。</p>
+<h3 id="与真实值的对比"><a class="markdownIt-Anchor" href="#与真实值的对比"></a> 与真实值的对比</h3>
+<p>为了评估进化算法生成的职业数值，本文在每次进化算法结束时选取使得上文中<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>F</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">F(x)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.13889em;">F</span><span class="mopen">(</span><span class="mord mathdefault">x</span><span class="mclose">)</span></span></span></span>最小的职业数值。用这数值在相应关卡中进行10场模拟，用结果的平均值和95%的置信区间来与真实值比较，具体如下图：</p>
+<img src= "/images/Ripple.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/20210708194816.png" style="zoom:50%;" />
+<p>其中，条状的都为模拟结果，即真实值，蓝色的是短时长、粉色的是中时长，橘色的是长时长。黑色的点是通过CNN得出的预测值，灰色的菱形是主动设定的指标。</p>
+<p>很明显并不是所有的预测值都落在真实值的可信度范围内，我们把落在可信度范围内就认为是预测相对准确的话，从上图中我们们从几个不同角度进行分类对比：</p>
+<ul>
+<li>对于整体的60组实验
+<ul>
+<li>击杀率预测的准确率35%</li>
+<li>游戏时长预测的准确率60%</li>
+</ul>
+</li>
+</ul>
+<p>可以看到整体来说游戏时长的预测相对击杀率准确。</p>
+<ul>
+<li>对于生成的关卡
+<ul>
+<li>击杀率预测的准确率63%</li>
+<li>游戏时长预测的准确率43%</li>
+</ul>
+</li>
+<li>对于人类设计的关卡
+<ul>
+<li>击杀率预测的准确率57%</li>
+<li>游戏时长预测的准确率27%</li>
+</ul>
+</li>
+</ul>
+<p>可以看到击杀率预测的准确性方面两种关卡没有显著差异，但是对于生成关卡的游戏时长预测显然比人类设计关卡预测准确。</p>
+<ul>
+<li>对于短时长比赛
+<ul>
+<li>击杀率预测的准确率55%</li>
+<li>游戏时长预测的准确率60%</li>
+</ul>
+</li>
+<li>对于中时长比赛
+<ul>
+<li>击杀率预测的准确率35%</li>
+<li>游戏时长预测的准确率35%</li>
+</ul>
+</li>
+<li>对于长时长比赛
+<ul>
+<li>击杀率预测的准确率90%</li>
+<li>游戏时长预测的准确率27%</li>
+</ul>
+</li>
+</ul>
+<p>可以看到在游戏时长预测方面，时长越长的比赛预测越不准确，而有击杀率方面，长时长比赛最为准确、短时长次之，中时长垫底。另外，能注意到几乎所有关卡（20中的18个）的中、短时长比赛的游戏时长之间没有显著差异。</p>
+<p>接下来考察生成的职业数值是否能够产生满足预先设定好的指标（击杀率与时长）的对局结果。</p>
+<ul>
+<li>对于整体的60组实验
+<ul>
+<li>满足预期击杀率的关卡占比58%</li>
+<li>满足预期游戏时长的关卡占比42%</li>
+</ul>
+</li>
+</ul>
+<p>另外，还能发现设定为中时长比赛时生成的职业数值往往对代理 A 更有利（平均击杀率0.57，明显高于其他两种时长）。</p>
+<p>接下来考察预测值与真实值、目标值与真实值的距离（差的绝对值）以及这两个距离之间的欧式距离，如下表：</p>
+<img src= "/images/Ripple.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/20210709092431.png" style="zoom:50%;" />
+<p>其中a、d、p分别代表真实值、目标值、预测值，下标t、s分别代表游戏时长和击杀率。可以观察到预测击杀率和实际击杀率之间的误差并不大，但是预测游戏时长和实际游戏时长的差距却较为明显。另外，游戏时长的预测在长时长比赛中并不准确，但是由于真实时长和目标时长差距不大，我们可以认为生成数值的进化算法很好地完成了任务。实际上这很耐人寻味，因为在上文中的关于模拟游戏时长的统计数据中可以看到短时长的比赛比长时长的比赛多，但是生成可以导致短时长比赛的职业数值却似乎更加困难。</p>
+<h3 id="生成的职业数值"><a class="markdownIt-Anchor" href="#生成的职业数值"></a> 生成的职业数值</h3>
+<p>每个代理玩家的职业数值平均数如下：</p>
+<img src= "/images/Ripple.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/20210709100404.png" style="zoom:50%;" />
+<p>可以看到根据目标的游戏时长不同，各个数值都发生了较为明显的变化，且变化趋势从游戏设计的角度考虑都较为合理。</p>
+<h3 id="与军团要塞2中职业的相似程度"><a class="markdownIt-Anchor" href="#与军团要塞2中职业的相似程度"></a> 与军团要塞2中职业的相似程度</h3>
+<p>本文在职业数值方面很大程度受到军团要塞2的启发，接下来选择了5个军团要塞2中的职业（Solider、Sniper Heavy、Pryo、Scout）来与生成的职业数值做对比，如果数值之间欧拉距离大于1.5则会被认为和军团要塞2中的角色相差较大，这类职业我们认为是undefined，结果如下：</p>
+<img src= "/images/Ripple.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/20210709101347.png" style="zoom:50%;" />
+<p>我们可以发现，对于短时长比赛，我们的算法倾向于生成长距离职业，而对于长时长比赛则倾向生成Heavy（血量高，命中率低）。最有趣的事中时长比赛中生成的职业更具多样性。</p>
+<h3 id="cnn和mlp的对比"><a class="markdownIt-Anchor" href="#cnn和mlp的对比"></a> CNN和MLP的对比</h3>
+<p>前面提到CNN和MLP表现差异不大，所以用相同的实验流程对MLP也进行也真实值的验证比对，准确性确实发生了下降，同时在生成的职业数值方面的倾向性也有所不同，如下：</p>
+<img src= "/images/Ripple.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/20210709110550.png" style="zoom:50%;" />
+<p>可以看到MLP倾向生成undefined。</p>
+<h2 id="参考"><a class="markdownIt-Anchor" href="#参考"></a> 参考</h2>
+<hr class="footnotes-sep" />
+<section class="footnotes">
+<ol class="footnotes-list">
+<li id="fn1" class="footnote-item"><p>Daniel Karavolos, Antonios Liapis, and Georgios N. Yannakakis. 2017. Learning the Patterns of Balance in a Multi-Player Shooter Game. In Proceedings of the FDG workshop on Procedural Content Generation in Games. <a href="#fnref1" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn2" class="footnote-item"><p>Daniel Karavolos, Antonios Liapis, and Georgios N. Yannakakis. 2018. Using a Surrogate Model of Gameplay for Automated Level Design. In Proceedings of the IEEE Conference on Computational Intelligence and Games. <a href="#fnref2" class="footnote-backref">↩︎</a></p>
+</li>
+</ol>
+</section>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">Kyox24</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://foggyworld.life/posts/6128dd5b/">https://foggyworld.life/posts/6128dd5b/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://foggyworld.life" target="_blank">Foggy World</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/PCG/">PCG</a><a class="post-meta__tags" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">机器学习</a></div><div class="post_share"><div class="social-share" data-image="https://cdn.jsdelivr.net/gh/kyox24/PicBed/DSGbyDL.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/posts/677c29b6/"><img class="next-cover" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/PCGBOOK_COVER2.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">PCGBook读书笔记｜第三章 地牢和关卡的结构性生成</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span> 相关推荐</span></div><div class="relatedPosts-list"><div><a href="/posts/34633fa0/" title="Bootstrapping Conditional GANs for Video Game Level Generation | 论文笔记"><img class="cover" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/LN_CESAGAN.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-05-04</div><div class="title">Bootstrapping Conditional GANs for Video Game Level Generation | 论文笔记</div></div></a></div><div><a href="/posts/a2e72197/" title="PCGRL：Procedural Content Generation via Reinforcement Learning ｜ 论文笔记"><img class="cover" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/LN_PCGRL3.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-05-02</div><div class="title">PCGRL：Procedural Content Generation via Reinforcement Learning ｜ 论文笔记</div></div></a></div><div><a href="/posts/43392113/" title="Adversarial Reinforcement Learning for Procedural Content Generation | 论文笔记"><img class="cover" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/LN_ARLPCG.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-05-25</div><div class="title">Adversarial Reinforcement Learning for Procedural Content Generation | 论文笔记</div></div></a></div><div><a href="/posts/352bf1e7/" title="PCGBook读书笔记｜第一章 介绍"><img class="cover" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/PCGBOOK_COVER2.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-04-20</div><div class="title">PCGBook读书笔记｜第一章 介绍</div></div></a></div><div><a href="/posts/a05f7909/" title="PCGBook读书笔记｜第二章 基于搜索的手法"><img class="cover" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/PCGBOOK_COVER2.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-04-29</div><div class="title">PCGBook读书笔记｜第二章 基于搜索的手法</div></div></a></div><div><a href="/posts/677c29b6/" title="PCGBook读书笔记｜第三章 地牢和关卡的结构性生成"><img class="cover" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/PCGBOOK_COVER2.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-07-04</div><div class="title">PCGBook读书笔记｜第三章 地牢和关卡的结构性生成</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="twikoo-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-info-avatar is-center"><img class="avatar-img" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/头像.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/><div class="author-info__name">Kyox24</div><div class="author-info__description">飞蛾扑火</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">26</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">14</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/kyox24"><i class="fab fa-github"></i><span>Github</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/kyox24" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:kyo19951024@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a><a class="social-icon" href="https://weibo.com/p/1005051882165114" target="_blank" title="Weibo"><i class="fab fa-weibo"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">缓慢搭建中</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%BA%E6%96%87%E4%BF%A1%E6%81%AF"><span class="toc-number">1.</span> <span class="toc-text"> 论文信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A6%82%E8%BF%B0"><span class="toc-number">2.</span> <span class="toc-text"> 概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%95%E8%A8%80"><span class="toc-number">3.</span> <span class="toc-text"> 引言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%B8%E5%85%B3%E7%A0%94%E7%A9%B6"><span class="toc-number">4.</span> <span class="toc-text"> 相关研究</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B8%B8%E6%88%8F%E6%A1%86%E6%9E%B6"><span class="toc-number">5.</span> <span class="toc-text"> 游戏框架</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B3%E5%8D%A1"><span class="toc-number">5.1.</span> <span class="toc-text"> 关卡</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%9C%B0%E5%9B%BE%E5%B1%9E%E6%80%A7"><span class="toc-number">5.1.1.</span> <span class="toc-text"> 地图属性</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#cnn%E7%BD%91%E7%BB%9C%E7%9A%84%E8%BE%93%E5%85%A5"><span class="toc-number">5.1.2.</span> <span class="toc-text"> CNN网络的输入</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%85%B3%E5%8D%A1%E7%94%9F%E6%88%90"><span class="toc-number">5.1.3.</span> <span class="toc-text"> 关卡生成</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B8%B8%E6%88%8F%E6%95%B0%E5%80%BC%E8%AE%BE%E5%AE%9A"><span class="toc-number">5.2.</span> <span class="toc-text"> 游戏数值设定</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A8%A1%E6%8B%9F%E6%AF%94%E8%B5%9B"><span class="toc-number">5.3.</span> <span class="toc-text"> 模拟比赛</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%AD%E7%BB%83%E6%A8%A1%E5%9E%8B"><span class="toc-number">6.</span> <span class="toc-text"> 训练模型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%AD%E7%BB%83%E6%95%B0%E6%8D%AE"><span class="toc-number">6.1.</span> <span class="toc-text"> 训练数据</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E6%9E%B6%E6%9E%84"><span class="toc-number">6.2.</span> <span class="toc-text"> 卷积神经网络架构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A8%A1%E5%9E%8B%E9%AA%8C%E8%AF%81"><span class="toc-number">6.3.</span> <span class="toc-text"> 模型验证</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%94%9F%E6%88%90%E8%81%8C%E4%B8%9A%E6%95%B0%E5%80%BC"><span class="toc-number">7.</span> <span class="toc-text"> 生成职业数值</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%8E%E7%9C%9F%E5%AE%9E%E5%80%BC%E7%9A%84%E5%AF%B9%E6%AF%94"><span class="toc-number">7.1.</span> <span class="toc-text"> 与真实值的对比</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%94%9F%E6%88%90%E7%9A%84%E8%81%8C%E4%B8%9A%E6%95%B0%E5%80%BC"><span class="toc-number">7.2.</span> <span class="toc-text"> 生成的职业数值</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%8E%E5%86%9B%E5%9B%A2%E8%A6%81%E5%A1%9E2%E4%B8%AD%E8%81%8C%E4%B8%9A%E7%9A%84%E7%9B%B8%E4%BC%BC%E7%A8%8B%E5%BA%A6"><span class="toc-number">7.3.</span> <span class="toc-text"> 与军团要塞2中职业的相似程度</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#cnn%E5%92%8Cmlp%E7%9A%84%E5%AF%B9%E6%AF%94"><span class="toc-number">7.4.</span> <span class="toc-text"> CNN和MLP的对比</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-number">8.</span> <span class="toc-text"> 参考</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/posts/6128dd5b/" title="Pairing Character Classes in a Deathmatch Shooter Game via a Deep-Learning Surrogate Model | 论文笔记"><img data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/DSGbyDL.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Pairing Character Classes in a Deathmatch Shooter Game via a Deep-Learning Surrogate Model | 论文笔记"/></a><div class="content"><a class="title" href="/posts/6128dd5b/" title="Pairing Character Classes in a Deathmatch Shooter Game via a Deep-Learning Surrogate Model | 论文笔记">Pairing Character Classes in a Deathmatch Shooter Game via a Deep-Learning Surrogate Model | 论文笔记</a><time datetime="2021-07-11T09:44:28.000Z" title="发表于 2021-07-11 18:44:28">2021-07-11</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/677c29b6/" title="PCGBook读书笔记｜第三章 地牢和关卡的结构性生成"><img data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/PCGBOOK_COVER2.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="PCGBook读书笔记｜第三章 地牢和关卡的结构性生成"/></a><div class="content"><a class="title" href="/posts/677c29b6/" title="PCGBook读书笔记｜第三章 地牢和关卡的结构性生成">PCGBook读书笔记｜第三章 地牢和关卡的结构性生成</a><time datetime="2021-07-04T02:53:07.000Z" title="发表于 2021-07-04 11:53:07">2021-07-04</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/43392113/" title="Adversarial Reinforcement Learning for Procedural Content Generation | 论文笔记"><img data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/LN_ARLPCG.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Adversarial Reinforcement Learning for Procedural Content Generation | 论文笔记"/></a><div class="content"><a class="title" href="/posts/43392113/" title="Adversarial Reinforcement Learning for Procedural Content Generation | 论文笔记">Adversarial Reinforcement Learning for Procedural Content Generation | 论文笔记</a><time datetime="2021-05-25T07:58:48.000Z" title="发表于 2021-05-25 16:58:48">2021-05-25</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/c9f13a0f/" title="TOAD-GAN在Google Colab训练时关于wandb输出的踩坑记录"><img data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/MEMO_toadganwandb.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="TOAD-GAN在Google Colab训练时关于wandb输出的踩坑记录"/></a><div class="content"><a class="title" href="/posts/c9f13a0f/" title="TOAD-GAN在Google Colab训练时关于wandb输出的踩坑记录">TOAD-GAN在Google Colab训练时关于wandb输出的踩坑记录</a><time datetime="2021-05-17T15:45:00.000Z" title="发表于 2021-05-18 00:45:00">2021-05-18</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/29b10db/" title="SinGAN：Learning a Generative Model from a Single Natural Image | 论文笔记"><img data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/LN_SINGAN.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="SinGAN：Learning a Generative Model from a Single Natural Image | 论文笔记"/></a><div class="content"><a class="title" href="/posts/29b10db/" title="SinGAN：Learning a Generative Model from a Single Natural Image | 论文笔记">SinGAN：Learning a Generative Model from a Single Natural Image | 论文笔记</a><time datetime="2021-05-16T14:56:44.000Z" title="发表于 2021-05-16 23:56:44">2021-05-16</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2021 By Kyox24</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="translateLink" type="button" title="简繁转换">繁</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module"></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload/dist/lazyload.iife.min.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><div class="js-pjax"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css"><script src="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.js"></script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.css"><script>(() => {
+  document.querySelectorAll('#article-container span.katex-display').forEach(item => {
+    btf.wrap(item, 'div', '', 'katex-wrap')
+  })
+})()</script><script>if (document.getElementsByClassName('mermaid').length) {
+  if (window.mermaidJsLoad) mermaid.init()
+  else {
+    getScript('https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js').then(() => {
+      window.mermaidJsLoad = true
+      mermaid.initialize({
+        theme: 'default',
+      })
+      false && mermaid.init()
+    })
+  }
+}</script><script>(()=>{
+  const $countDom = document.getElementById('twikoo-count')
+  const init = () => {
+    twikoo.init(Object.assign({
+      el: '#twikoo-wrap',
+      envId: 'blog-comment-7ggp4lbmaeda677f',
+      region: ''
+    }, null))
+  }
+
+  const getCount = () => {
+    twikoo.getCommentsCount({
+      envId: 'blog-comment-7ggp4lbmaeda677f',
+      region: '',
+      urls: [window.location.pathname],
+      includeReply: false
+    }).then(function (res) {
+      $countDom.innerText = res[0].count
+    }).catch(function (err) {
+      console.error(err);
+    });
+  }
+
+  const loadTwikoo = (bool = false) => {
+    if (typeof twikoo === 'object') {
+      init()
+      bool && $countDom && setTimeout(getCount,0)
+    } else {
+      getScript('https://cdn.jsdelivr.net/npm/twikoo/dist/twikoo.all.min.js').then(()=> {
+        init()
+        bool && $countDom && setTimeout(getCount,0)
+      })
+    }
+  }
+
+  if ('Twikoo' === 'Twikoo' || !true) {
+    if (true) btf.loadComment(document.getElementById('twikoo-wrap'), loadTwikoo)
+    else loadTwikoo(true)
+  } else {
+    window.loadOtherComment = () => {
+      loadTwikoo()
+    }
+  }
+})()</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
