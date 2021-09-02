@@ -1,0 +1,228 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Procedural Landmass Generation E03 | Foggy World</title><meta name="keywords" content="PCG,Unity3D"><meta name="author" content="Kyox24"><meta name="copyright" content="Kyox24"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="这一节教程主要主要对生成的噪声进行效果优化">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Procedural Landmass Generation E03">
+<meta property="og:url" content="https://foggyworld.life/posts/cab2bca7/index.html">
+<meta property="og:site_name" content="Foggy World">
+<meta property="og:description" content="这一节教程主要主要对生成的噪声进行效果优化">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/kyox24/PicBed/PLG_E03.png">
+<meta property="article:published_time" content="2021-09-02T14:03:39.000Z">
+<meta property="article:modified_time" content="2021-09-02T15:03:39.519Z">
+<meta property="article:author" content="Kyox24">
+<meta property="article:tag" content="PCG">
+<meta property="article:tag" content="Unity3D">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/kyox24/PicBed/PLG_E03.png"><link rel="shortcut icon" href="/images/GAME%20CONSOLE.png"><link rel="canonical" href="https://foggyworld.life/posts/cab2bca7/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//fonts.googleapis.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web&amp;display=swap" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#2d3035","position":"bottom-left"},
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isanchor: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2021-09-03 00:03:39'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          const now = new Date()
+          const hour = now.getHours()
+          const isNight = hour <= 6 || hour >= 18
+          if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+          else if (t === 'light') activateLightMode()
+          else activateDarkMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    })(window)</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/zhheo/JS-Heo@main/bb/showbb_in_index.css"><link rel="stylesheet" href="/style/test.css"><meta name="generator" content="Hexo 5.4.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="author-avatar"><img class="avatar-img" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/头像.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">28</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">14</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/bb/"><i class="fa-fw fas fa-quote-left"></i><span> 自言自语</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于我</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Foggy World</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/bb/"><i class="fa-fw fas fa-quote-left"></i><span> 自言自语</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于我</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">Procedural Landmass Generation E03</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-09-02T14:03:39.000Z" title="发表于 2021-09-02 23:03:39">2021-09-02</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-09-02T15:03:39.519Z" title="更新于 2021-09-03 00:03:39">2021-09-03</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%AD%A6%E4%B9%A0/">学习</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Procedural Landmass Generation E03"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div><article class="post-content" id="article-container"><h2 id="教程链接"><a class="markdownIt-Anchor" href="#教程链接"></a> 教程链接</h2>
+<hr />
+<p><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=MRNFcywkUSA&amp;list=PLFt_AvWasXl0eBW2EiBtl_sxmDtSgZBxB3&amp;index=3">Procedural Landmass Generation (E03: Octaves)</a></p>
+<h2 id="摘要"><a class="markdownIt-Anchor" href="#摘要"></a> 摘要</h2>
+<hr />
+<p>这一节教程主要主要对生成的噪声进行效果优化。</p>
+<h2 id="本节创建了或者改动了的东西"><a class="markdownIt-Anchor" href="#本节创建了或者改动了的东西"></a> 本节创建了或者改动了的东西</h2>
+<hr />
+<h3 id="assetscripts"><a class="markdownIt-Anchor" href="#assetscripts"></a> Asset/Scripts</h3>
+<ul>
+<li>MapGenerator.cs：修改。添加参数，并为参数添加限制</li>
+<li>Noise.cs：修改。对生成的噪声进行效果优化</li>
+</ul>
+<h2 id="步骤"><a class="markdownIt-Anchor" href="#步骤"></a> 步骤</h2>
+<hr />
+<h3 id="修改mapgeneratorcs"><a class="markdownIt-Anchor" href="#修改mapgeneratorcs"></a> 修改MapGenerator.cs</h3>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> MapGenerator的Component</span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">MapGenerator</span> : <span class="title">MonoBehaviour</span>&#123;</span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> 显示噪声区域的宽</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">int</span> MapWidth;</span><br><span class="line"></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> 显示噪声区域的高</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">int</span> MapHeight;</span><br><span class="line"></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> 显示噪声区域的缩放</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">float</span> NoiseScale;</span><br><span class="line"></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> 倍频，叠加次数</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">int</span> Octaves;</span><br><span class="line">    </span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> 振幅系数</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    [<span class="meta">Range(0, 1)</span>]</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">float</span> Persistance;</span><br><span class="line"></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> 间隙度</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">float</span> Lacunarity;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">int</span> Seed;</span><br><span class="line">    <span class="keyword">public</span> Vector2 Offset;</span><br><span class="line"></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> 噪声区域参数发生变化时是否刷新显示噪声</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">bool</span> AutoUpdate;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">GenerateMap</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">        <span class="built_in">float</span>[,] noiseMap = Noise.GenerateNoiseMap(MapWidth, MapHeight, Seed, NoiseScale, Octaves, Persistance, Lacunarity, Offset);</span><br><span class="line">        MapDisplay display = GetComponent&lt;MapDisplay&gt;();</span><br><span class="line">        display.DrawNoiseMap(noiseMap);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">OnValidate</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(MapWidth &lt; <span class="number">1</span>)&#123;</span><br><span class="line">            MapWidth = <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(MapHeight &lt; <span class="number">1</span>)&#123;</span><br><span class="line">            MapHeight = <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(Lacunarity &lt; <span class="number">1</span>)&#123;</span><br><span class="line">            Lacunarity = <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(Octaves &lt; <span class="number">0</span>)&#123;</span><br><span class="line">            Octaves = <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="修改noisecs"><a class="markdownIt-Anchor" href="#修改noisecs"></a> 修改Noise.cs</h3>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> 用于生成PerlinNoise</span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">class</span> <span class="title">Noise</span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="built_in">float</span> [,] GenerateNoiseMap(<span class="built_in">int</span> mapWidth, <span class="built_in">int</span> mapHeight, <span class="built_in">int</span> seed, <span class="built_in">float</span> scale, <span class="built_in">int</span> octaves, <span class="built_in">float</span> persistance, <span class="built_in">float</span> lacunarity, Vector2 offset)&#123;</span><br><span class="line">        <span class="built_in">float</span>[,] noiseMap = <span class="keyword">new</span> <span class="built_in">float</span>[mapWidth, mapHeight];</span><br><span class="line"></span><br><span class="line">        System.Random prng = <span class="keyword">new</span> System.Random(seed);</span><br><span class="line">        Vector2[] octaveOffsets = <span class="keyword">new</span> Vector2[octaves];</span><br><span class="line">        <span class="comment">// 叠加噪声时添加随机offset</span></span><br><span class="line">        <span class="keyword">for</span>(<span class="built_in">int</span> i = <span class="number">0</span>; i &lt; octaves; i++)&#123;</span><br><span class="line">            <span class="built_in">float</span> offsetX = prng.Next(<span class="number">-100000</span>, <span class="number">100000</span>) + offset.x;</span><br><span class="line">            <span class="built_in">float</span> offsetY = prng.Next(<span class="number">-100000</span>, <span class="number">100000</span>) + offset.y;</span><br><span class="line">            octaveOffsets[i] = <span class="keyword">new</span> Vector2(offsetX, offsetY);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 如果小于等于0会导致错误，这里强行令Scale大于等于0</span></span><br><span class="line">        <span class="keyword">if</span>(scale &lt;= <span class="number">0</span>)&#123;</span><br><span class="line">            scale = <span class="number">0.0001f</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="built_in">float</span> maxNoiseHeight = <span class="built_in">float</span>.MinValue;</span><br><span class="line">        <span class="built_in">float</span> minNoiseHeight = <span class="built_in">float</span>.MaxValue;</span><br><span class="line">        </span><br><span class="line">        <span class="built_in">float</span> halfWidth = mapWidth / <span class="number">2f</span>;</span><br><span class="line">        <span class="built_in">float</span> halfHeight = mapWidth / <span class="number">2f</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span>(<span class="built_in">int</span> y = <span class="number">0</span>; y &lt; mapHeight; y++)&#123;</span><br><span class="line">            <span class="keyword">for</span>(<span class="built_in">int</span> x = <span class="number">0</span>; x &lt; mapWidth; x++)&#123;</span><br><span class="line">                </span><br><span class="line">                <span class="comment">// 振幅</span></span><br><span class="line">                <span class="built_in">float</span> amplitude = <span class="number">1f</span>;</span><br><span class="line">                <span class="comment">// 频率</span></span><br><span class="line">                <span class="built_in">float</span> frequency = <span class="number">1f</span>;</span><br><span class="line">                <span class="comment">// 噪声高度</span></span><br><span class="line">                <span class="built_in">float</span> noiseHeight = <span class="number">0f</span>;</span><br><span class="line"></span><br><span class="line">                <span class="keyword">for</span>(<span class="built_in">int</span> i = <span class="number">0</span>;i &lt; octaves; i++)&#123;</span><br><span class="line">                    <span class="comment">// -half是为了让scale是以噪声区域中心为基准</span></span><br><span class="line">                    <span class="built_in">float</span> sampleX = (x-halfWidth) / scale * frequency + octaveOffsets[i].x;</span><br><span class="line">                    <span class="built_in">float</span> sampleY = (y-halfHeight) / scale * frequency + octaveOffsets[i].y;</span><br><span class="line">                    </span><br><span class="line">                    <span class="comment">// [0, 1] -&gt; [-1, 1]</span></span><br><span class="line">                    <span class="built_in">float</span> perlineValue = Mathf.PerlinNoise(sampleX, sampleY) * <span class="number">2</span> - <span class="number">1</span>;</span><br><span class="line">                    <span class="comment">// 进行叠加</span></span><br><span class="line">                    noiseHeight += perlineValue * amplitude;</span><br><span class="line">                    </span><br><span class="line">                    <span class="comment">// 因为persistance \in [0, 1] 所以振幅在不断减小</span></span><br><span class="line">                    amplitude *= persistance;</span><br><span class="line">                    frequency *= lacunarity;</span><br><span class="line">                &#125;</span><br><span class="line">                </span><br><span class="line">                <span class="comment">// 这里为了之后把noise的值从[-1, 1] 标准化回 [0, 1]，所以需要计算最大最小值</span></span><br><span class="line">                <span class="keyword">if</span>(noiseHeight &gt; maxNoiseHeight)&#123;</span><br><span class="line">                    maxNoiseHeight = noiseHeight;</span><br><span class="line">                &#125;<span class="keyword">else</span> <span class="keyword">if</span> (noiseHeight &lt; minNoiseHeight)&#123;</span><br><span class="line">                    minNoiseHeight = noiseHeight;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                noiseMap[x, y] = noiseHeight;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// [-1, 1] -&gt; [0, 1]</span></span><br><span class="line">        <span class="keyword">for</span>(<span class="built_in">int</span> y = <span class="number">0</span>; y &lt; mapHeight; y++)&#123;</span><br><span class="line">            <span class="keyword">for</span>(<span class="built_in">int</span> x = <span class="number">0</span>; x &lt; mapWidth; x++)&#123;</span><br><span class="line">                noiseMap[x, y] = Mathf.InverseLerp(minNoiseHeight, maxNoiseHeight, noiseMap[x, y]);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> noiseMap;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="效果"><a class="markdownIt-Anchor" href="#效果"></a> 效果</h2>
+<hr />
+<p>调整参数即可看到效果：</p>
+<p><img src= "/images/Ripple.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/20210821200559.png" alt="" /></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">Kyox24</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://foggyworld.life/posts/cab2bca7/">https://foggyworld.life/posts/cab2bca7/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://foggyworld.life" target="_blank">Foggy World</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/PCG/">PCG</a><a class="post-meta__tags" href="/tags/Unity3D/">Unity3D</a></div><div class="post_share"><div class="social-share" data-image="https://cdn.jsdelivr.net/gh/kyox24/PicBed/PLG_E03.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/posts/bdb58c31/"><img class="next-cover" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/PLG_E02.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Procedural Landmass Generation E02</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span> 相关推荐</span></div><div class="relatedPosts-list"><div><a href="/posts/bdb58c31/" title="Procedural Landmass Generation E02"><img class="cover" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/PLG_E02.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-09-02</div><div class="title">Procedural Landmass Generation E02</div></div></a></div><div><a href="/posts/34633fa0/" title="Bootstrapping Conditional GANs for Video Game Level Generation | 论文笔记"><img class="cover" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/LN_CESAGAN.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-05-04</div><div class="title">Bootstrapping Conditional GANs for Video Game Level Generation | 论文笔记</div></div></a></div><div><a href="/posts/352bf1e7/" title="PCGBook读书笔记｜第一章 介绍"><img class="cover" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/PCGBOOK_COVER2.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-04-20</div><div class="title">PCGBook读书笔记｜第一章 介绍</div></div></a></div><div><a href="/posts/a05f7909/" title="PCGBook读书笔记｜第二章 基于搜索的手法"><img class="cover" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/PCGBOOK_COVER2.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-04-29</div><div class="title">PCGBook读书笔记｜第二章 基于搜索的手法</div></div></a></div><div><a href="/posts/a2e72197/" title="PCGRL：Procedural Content Generation via Reinforcement Learning ｜ 论文笔记"><img class="cover" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/LN_PCGRL3.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-05-02</div><div class="title">PCGRL：Procedural Content Generation via Reinforcement Learning ｜ 论文笔记</div></div></a></div><div><a href="/posts/43392113/" title="Adversarial Reinforcement Learning for Procedural Content Generation | 论文笔记"><img class="cover" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/LN_ARLPCG.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-05-25</div><div class="title">Adversarial Reinforcement Learning for Procedural Content Generation | 论文笔记</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="twikoo-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-info-avatar is-center"><img class="avatar-img" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/头像.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/><div class="author-info__name">Kyox24</div><div class="author-info__description">飞蛾扑火</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">28</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">14</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/kyox24"><i class="fab fa-github"></i><span>Github</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/kyox24" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:kyo19951024@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a><a class="social-icon" href="https://weibo.com/p/1005051882165114" target="_blank" title="Weibo"><i class="fab fa-weibo"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">缓慢搭建中</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%99%E7%A8%8B%E9%93%BE%E6%8E%A5"><span class="toc-number">1.</span> <span class="toc-text"> 教程链接</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%91%98%E8%A6%81"><span class="toc-number">2.</span> <span class="toc-text"> 摘要</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%AC%E8%8A%82%E5%88%9B%E5%BB%BA%E4%BA%86%E6%88%96%E8%80%85%E6%94%B9%E5%8A%A8%E4%BA%86%E7%9A%84%E4%B8%9C%E8%A5%BF"><span class="toc-number">3.</span> <span class="toc-text"> 本节创建了或者改动了的东西</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#assetscripts"><span class="toc-number">3.1.</span> <span class="toc-text"> Asset&#x2F;Scripts</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%AD%A5%E9%AA%A4"><span class="toc-number">4.</span> <span class="toc-text"> 步骤</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9mapgeneratorcs"><span class="toc-number">4.1.</span> <span class="toc-text"> 修改MapGenerator.cs</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9noisecs"><span class="toc-number">4.2.</span> <span class="toc-text"> 修改Noise.cs</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%88%E6%9E%9C"><span class="toc-number">5.</span> <span class="toc-text"> 效果</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/posts/cab2bca7/" title="Procedural Landmass Generation E03"><img data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/PLG_E03.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Procedural Landmass Generation E03"/></a><div class="content"><a class="title" href="/posts/cab2bca7/" title="Procedural Landmass Generation E03">Procedural Landmass Generation E03</a><time datetime="2021-09-02T14:03:39.000Z" title="发表于 2021-09-02 23:03:39">2021-09-02</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/bdb58c31/" title="Procedural Landmass Generation E02"><img data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/PLG_E02.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Procedural Landmass Generation E02"/></a><div class="content"><a class="title" href="/posts/bdb58c31/" title="Procedural Landmass Generation E02">Procedural Landmass Generation E02</a><time datetime="2021-09-02T13:41:02.000Z" title="发表于 2021-09-02 22:41:02">2021-09-02</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/6128dd5b/" title="Pairing Character Classes in a Deathmatch Shooter Game via a Deep-Learning Surrogate Model | 论文笔记"><img data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/DSGbyDL.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Pairing Character Classes in a Deathmatch Shooter Game via a Deep-Learning Surrogate Model | 论文笔记"/></a><div class="content"><a class="title" href="/posts/6128dd5b/" title="Pairing Character Classes in a Deathmatch Shooter Game via a Deep-Learning Surrogate Model | 论文笔记">Pairing Character Classes in a Deathmatch Shooter Game via a Deep-Learning Surrogate Model | 论文笔记</a><time datetime="2021-07-11T09:44:28.000Z" title="发表于 2021-07-11 18:44:28">2021-07-11</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/677c29b6/" title="PCGBook读书笔记｜第三章 地牢和关卡的结构性生成"><img data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/PCGBOOK_COVER2.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="PCGBook读书笔记｜第三章 地牢和关卡的结构性生成"/></a><div class="content"><a class="title" href="/posts/677c29b6/" title="PCGBook读书笔记｜第三章 地牢和关卡的结构性生成">PCGBook读书笔记｜第三章 地牢和关卡的结构性生成</a><time datetime="2021-07-04T02:53:07.000Z" title="发表于 2021-07-04 11:53:07">2021-07-04</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/43392113/" title="Adversarial Reinforcement Learning for Procedural Content Generation | 论文笔记"><img data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/LN_ARLPCG.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Adversarial Reinforcement Learning for Procedural Content Generation | 论文笔记"/></a><div class="content"><a class="title" href="/posts/43392113/" title="Adversarial Reinforcement Learning for Procedural Content Generation | 论文笔记">Adversarial Reinforcement Learning for Procedural Content Generation | 论文笔记</a><time datetime="2021-05-25T07:58:48.000Z" title="发表于 2021-05-25 16:58:48">2021-05-25</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2021 By Kyox24</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="translateLink" type="button" title="简繁转换">繁</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module"></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload/dist/lazyload.iife.min.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><div class="js-pjax"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css"><script src="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.js"></script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.css"><script>(() => {
+  document.querySelectorAll('#article-container span.katex-display').forEach(item => {
+    btf.wrap(item, 'div', '', 'katex-wrap')
+  })
+})()</script><script>if (document.getElementsByClassName('mermaid').length) {
+  if (window.mermaidJsLoad) mermaid.init()
+  else {
+    getScript('https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js').then(() => {
+      window.mermaidJsLoad = true
+      mermaid.initialize({
+        theme: 'default',
+      })
+      false && mermaid.init()
+    })
+  }
+}</script><script>(()=>{
+  const $countDom = document.getElementById('twikoo-count')
+  const init = () => {
+    twikoo.init(Object.assign({
+      el: '#twikoo-wrap',
+      envId: 'blog-comment-7ggp4lbmaeda677f',
+      region: ''
+    }, null))
+  }
+
+  const getCount = () => {
+    twikoo.getCommentsCount({
+      envId: 'blog-comment-7ggp4lbmaeda677f',
+      region: '',
+      urls: [window.location.pathname],
+      includeReply: false
+    }).then(function (res) {
+      $countDom.innerText = res[0].count
+    }).catch(function (err) {
+      console.error(err);
+    });
+  }
+
+  const loadTwikoo = (bool = false) => {
+    if (typeof twikoo === 'object') {
+      init()
+      bool && $countDom && setTimeout(getCount,0)
+    } else {
+      getScript('https://cdn.jsdelivr.net/npm/twikoo/dist/twikoo.all.min.js').then(()=> {
+        init()
+        bool && $countDom && setTimeout(getCount,0)
+      })
+    }
+  }
+
+  if ('Twikoo' === 'Twikoo' || !true) {
+    if (true) btf.loadComment(document.getElementById('twikoo-wrap'), loadTwikoo)
+    else loadTwikoo(true)
+  } else {
+    window.loadOtherComment = () => {
+      loadTwikoo()
+    }
+  }
+})()</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
