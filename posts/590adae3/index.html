@@ -1,0 +1,344 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>转向系统与动画｜GDC笔记 | Foggy World</title><meta name="keywords" content="游戏AI,GDC"><meta name="author" content="Kyox24"><meta name="copyright" content="Kyox24"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="本文为GDC2013的Managing the Movement Getting Your Animation Behaviors to Behave Better中部分内容的学习笔记。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="转向系统与动画｜GDC笔记">
+<meta property="og:url" content="https://foggyworld.life/posts/590adae3/index.html">
+<meta property="og:site_name" content="Foggy World">
+<meta property="og:description" content="本文为GDC2013的Managing the Movement Getting Your Animation Behaviors to Behave Better中部分内容的学习笔记。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/kyox24/PicBed/GDC_new.png">
+<meta property="article:published_time" content="2022-03-08T05:49:33.000Z">
+<meta property="article:modified_time" content="2022-03-08T05:53:00.752Z">
+<meta property="article:author" content="Kyox24">
+<meta property="article:tag" content="游戏AI">
+<meta property="article:tag" content="GDC">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/kyox24/PicBed/GDC_new.png"><link rel="shortcut icon" href="/images/GAME%20CONSOLE.png"><link rel="canonical" href="https://foggyworld.life/posts/590adae3/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//fonts.googleapis.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web&amp;display=swap" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#2d3035","position":"bottom-left"},
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isanchor: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '转向系统与动画｜GDC笔记',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2022-03-08 14:53:00'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          const now = new Date()
+          const hour = now.getHours()
+          const isNight = hour <= 6 || hour >= 18
+          if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+          else if (t === 'light') activateLightMode()
+          else activateDarkMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if (GLOBAL_CONFIG_SITE.isHome && /iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/zhheo/JS-Heo@main/bb/showbb_in_index.css"><link rel="stylesheet" href="/style/test.css"><meta name="generator" content="Hexo 5.4.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/头像.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">32</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">16</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/bb/"><i class="fa-fw fas fa-quote-left"></i><span> 自言自语</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于我</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Foggy World</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/bb/"><i class="fa-fw fas fa-quote-left"></i><span> 自言自语</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于我</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">转向系统与动画｜GDC笔记</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-03-08T05:49:33.000Z" title="发表于 2022-03-08 14:49:33">2022-03-08</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2022-03-08T05:53:00.752Z" title="更新于 2022-03-08 14:53:00">2022-03-08</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="转向系统与动画｜GDC笔记"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div><article class="post-content" id="article-container"><h2 id="基础信息"><a class="markdownIt-Anchor" href="#基础信息"></a> 基础信息</h2>
+<hr />
+<ul>
+<li>来自GDC2013的<a target="_blank" rel="noopener" href="https://www.gdcvault.com/play/1018060/Managing-the-Movement-Getting-Your">Managing the Movement: Getting Your Animation Behaviors to Behave Better</a>。</li>
+<li>FF15的人工智能读书笔记难产了，主要原因是寻路的避障和动画这两块功能没有怎么接触过。本文为书中提到的GDC分享的学习笔记。</li>
+<li>原视频的分享有两部分，分别由两位业界前辈进行分享，但本文只包含了第二部分的内容，即Ben Sunshine-Hill分享的<strong>转向系统与动画（Layering Steering and Animation）</strong>，并且省略了单元测试部分。</li>
+<li>已经是近10年前的分享了，相信这方面技术已有了无数次迭代更新，本文仅为个人备忘，参考需谨慎。</li>
+</ul>
+<h2 id="概要"><a class="markdownIt-Anchor" href="#概要"></a> 概要</h2>
+<hr />
+<p><img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/%E5%B9%BB%E7%81%AF%E7%89%8748.png" alt="" /></p>
+<p>传统的避障算法对于质点间转向或避障行为是非常有效的，但是在实际游戏开发中特别是加上动画后，效果经常达不到预期。这次的分享围绕<strong>如何让转向系统（主要指避障算法）和动画系统很好地一起工作</strong>这一主题展开。主要分为4个部分，<strong>寻路</strong>、<strong>动画系统和转向系统之间的通信</strong>、<strong>基于效用的转向系统</strong>和<strong>单元测试</strong>（这篇文章暂时不会提及）。</p>
+<h2 id="寻路"><a class="markdownIt-Anchor" href="#寻路"></a> 寻路</h2>
+<hr />
+<p>首先，分享者认为简单的**路径跟随（Path Following）**并不适用于游戏开发。在说明为什么之前，我们需要先对路径和路径跟随进行简单定义。</p>
+<p><img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/20220305234120.png" alt="" /></p>
+<ul>
+<li>路径：起点到目的地之间的直线或曲线。</li>
+<li>路径跟随：尽量保证智能体沿着路径行进。</li>
+</ul>
+<img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/20220305234221.png" style="zoom:50%;" />
+<p>那么简单的路径跟随不有效的原因如下：</p>
+<ul>
+<li>不够灵活，在墙角时很不自然，如部分智能体出现停顿等（见下面的GIF）。</li>
+</ul>
+<img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/corner bottleneck.wmv.gif" style="zoom:50%;" />
+<ul>
+<li>适应性差，如果智能体因动画延迟等原因偏离路径的话，智能体可能会不知道怎么回到路径上。</li>
+</ul>
+<p><img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/%E5%B9%BB%E7%81%AF%E7%89%8752.png" alt="" /></p>
+<p>分享者认为应该使用**边界跟随（Edge Following）**代替路径跟随。其中边界指的是<code>NavMesh</code>的<code>Corridor</code>中的Mesh的边界。简单来说，这算法每一帧通过<a target="_blank" rel="noopener" href="https://www.cnblogs.com/pointer-smq/p/11332897.html">漏斗算法（Funnel Algorithm）</a>按顺序进行以下两种计算：</p>
+<ul>
+<li>计算为了达到目的地下一次需要进行转向的位置。</li>
+<li>计算为了到达上一步计算得到位置的起步方向。需要注意的是，这个方向会根据<strong>智能体需要离转角保持的距离</strong>调整（上图中转角处的圆的半径）。</li>
+</ul>
+<p><img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/20220306004020.png" alt="" /></p>
+<p>比起路径跟随，边界跟随的基本优点有：</p>
+<ul>
+<li>因为输入信息更多，所以智能体如果偏离预定路径也能自适应地找到走向目的地的最短路径。</li>
+<li>同样的原因，智能体也更容易对其的速度进行规划，下面的GIF是分享者制作的一个Demo，在这个Demo中智能体可以预测离自身一定距离内转角，并作出相应的对策。</li>
+</ul>
+<p><img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/cornerprediction.wmv.gif" alt="" /></p>
+<img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/20220306011054.png" style="zoom:50%;" />
+<p>另外，因为能够通过调整智能体需要离转角保持的距离（下面用半径表述），还有以下优点：</p>
+<ul>
+<li>
+<p>可以避免<strong>Corner Bounce</strong>（在下文中会提到，指人物动画在转角时会发生抖动的一种现象）。</p>
+</li>
+<li>
+<p>如下面的两个GIF，边界跟随不仅可以解决开头提到的集群AI在转角发生的不自然，还可以应对在转角处两组集群AI相反方向移动的情况。只需设置好相应的半径即可。</p>
+<img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/corner lanes.wmv.gif" style="zoom:50%;" />
+<img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/opposed traversal.wmv.gif" style="zoom:50%;" />
+<ul>
+<li>需要特别注意的是这种调整半径的做法和设置碰撞体半径的不同之处在于：在边界跟随这一解决方案中，在需要时智能体是能够以比约定的更小的半径进行转向的。</li>
+</ul>
+</li>
+</ul>
+<h2 id="动画系统和转向系统之间的通信"><a class="markdownIt-Anchor" href="#动画系统和转向系统之间的通信"></a> 动画系统和转向系统之间的通信</h2>
+<hr />
+<p>转向系统通常需要角色的位置，而在当时角色位置一般有两种表示方式：</p>
+<ul>
+<li>骨盆骨骼的位置。</li>
+<li>骨盆骨骼正下方地面的位置。</li>
+</ul>
+<p>如下面的GIF，这两种表示方式都会导致Corner Bounce，注意GIF中角色在拐角处的抖动：</p>
+<img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/corner bounce.wmv.gif" style="zoom:50%;" />
+<p>Corner Bounce发生的原因也很简单，如下面的GIF大致情况如下：</p>
+<ul>
+<li>遇到转角，在转向系统的作用下角色开始转向并继续移动。</li>
+<li>转向并移动的过程中角色的碰撞体和转角发生碰撞。</li>
+<li>在转向系统的作用下使角色回正避免继续碰撞。</li>
+<li>再次因为撞角，在转向系统的作用下角色开始转向并继续移动，因此造成抖动。</li>
+</ul>
+<img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/corner bounce above.wmv.gif" style="zoom:50%;" />
+<img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/20220307110029.png" style="zoom:50%;" />
+<p>分享者认为可以通过调整和平滑化运动轨迹来避免Corner Bounce，具体如下：</p>
+<ul>
+<li>平滑化角色跑动时身体躯干偏移的速度（原本是恒定速度）。</li>
+<li>如下面的GIF，在转向时保证角色的身体躯干总是朝向转角的外侧，这是避免Corner Bounce的关键。</li>
+</ul>
+<img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/turning root.wmv.gif" style="zoom:50%;" />
+<ul>
+<li>如下面的GIF，对<code>idle</code>-&gt;<code>run</code>的加速度进行平滑化处理。</li>
+</ul>
+<img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/start stop root.wmv.gif" style="zoom:50%;" />
+<p>使用上述方法修正后的情况如下：</p>
+<img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/good cornering.wmv.gif" style="zoom:50%;" />
+<p>分享开始时就提到：传统的转向系统或者避障算法往往在智能体是质点时是有效的，但在智能体是角色并附有动画系统时容易出现问题。问题发生的原因之一是因为在质点的情况下，智能体对自身速度有完全的掌控权，同时也能简单地获取其他智能体的速度信息。</p>
+<p><img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/20220307110436.png" alt="" /></p>
+<p>但加上动画系统后，首先智能体不再能够直接地控制自身的速度，智能体在计算出需要的速度后与动画系统通信，让动画系统来修改速度。此外，当智能体需要得知自身或者其他智能体的速度信息时，也需要和动画系统进行通信，这导致了得到的速度信息不够准确。</p>
+<p><img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/20220307111048.png" alt="" /></p>
+<p>分享者用了一种比较“邪道”的方式来解决这种延迟问题，即让智能体之间得知彼此的速度，其他不变。也就是转向系统依然会向动画系统通信并要求修改自身速度，但是当需要得知速度信息时不使用通过动画系统得到的返回结果，而是直接从其他智能体处获得。</p>
+<p><img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/20220307113541.png" alt="" /></p>
+<img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/20220307113753.png" style="zoom:50%;" />
+<p>这么做虽然可以让我们的转向系统和动画系统一起正常工作，当仍然需要特别注意这种做法并没有从根本上解决问题，同时还有可能导致一些十分难发现的问题发生。</p>
+<h2 id="基于效用的转向系统"><a class="markdownIt-Anchor" href="#基于效用的转向系统"></a> 基于效用的转向系统</h2>
+<hr />
+<p>到目前为止，分享者都在讨论动画系统侧通过什么样的举措可以保证转向系统的正常运转。而从现在开始，分享者将会分享转向系统这一侧可以做些什么来使得动画系统更加按照预期地进行工作。</p>
+<p>经典避障算法<code>RVO</code>与一些它的变体总是在试图寻找一个不会碰到任何障碍物的速度或速度范围。因此，使用了这类算法智能体的行为逻辑，即只选择不会碰到障碍物的速度，是过于二元论的。</p>
+<p>分享者认为游戏中的寻路需要满足以下三种不同的需求，并且实际状况中难免在三个需求中折衷，因此，使用基于<strong>效用（Utility）</strong> 的方法来选择速度更为合适：</p>
+<ul>
+<li>到达目的地</li>
+<li>避开障碍物</li>
+<li>让动画系统正常工作</li>
+</ul>
+<img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/image-20220307225148352.png" style="zoom:50%;" />
+<p>基于效用的转向系统还可以解决<strong>Reciprocal Dance</strong>问题，Reciprocal Dance指的是下面GIF中的情况：</p>
+<img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/reciprocal dance.wmv.gif" style="zoom:50%;" />
+<p>因为GIF压缩的原因，看的有点不清楚，GIF中黑色的东西为智能体，红色箭头为其速度，原视频中当两个智能体靠近时他们的箭头都发生了一定程度的抖动。Reciprocal Dance其实就是当两个智能体即将发生碰撞时，智能体们不能对<strong>谁要往哪个方向通过</strong>这件事达成共识。用现实中可能遇到的例子来说，当你迎面遇上个人，你想避开他，但是你们不约而同地选择了同个方向，因此又要继续避开，而又不约而同地选择了同个方向，不断反复。</p>
+<p>这个问题继承于<code>RVO</code>，并且在游戏中加上动画系统后会变得更加频繁、更加明显以及持续的时间也更长。</p>
+<p><img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/%E5%B9%BB%E7%81%AF%E7%89%8768.png" alt="" /></p>
+<p>现有的被认为可以解决Reciprocal Dance问题的算法有<code>HRVO</code>和<code>ORCA</code>，但分享者认为前者过于“邪道”并且效果不好，后者则太过于绝对。而基于效用的话，效果则会好得多，效用的计算方式大致如下：</p>
+<ul>
+<li>检测智能体现在的前进方向。</li>
+<li>降低那些会改变目前前进方向的速度的效用。
+<ul>
+<li>细节上，如果两个智能体距离较远，对于导致转向的速度的效用降低会相对少。这是因为我们需要先处理距离近或者即将相撞的智能体的转向。</li>
+<li>如果两个智能体以几乎同一直线且相对的速度行进的话，对于导致转向的速度的效用降低会相对少。</li>
+</ul>
+</li>
+</ul>
+<p>另一方面，人眼对于碰撞的感知程度其实是较为不敏感的，如下面的GIF，实际上两个角色是发生碰撞了的：</p>
+<img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/invisiblepenetration.wmv.gif" style="zoom:50%;" />
+<img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/20220308134046.png" style="zoom:50%;" />
+<p>没有明显感知到碰撞的原因正是因为我们没有对碰撞做额外的转向或停止处理。因此，对于碰撞问题，我们也可以young类似效用的思想来处理。</p>
+<p><img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/20220308134235.png" alt="" /></p>
+<p>大致的做法是，转向系统中角色的半径与真实的角色半径相同，而在物理碰撞系统中角色的半径比真实的角色半径小。具体的候选速度的效用方程如下：</p>
+<p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>s</mi><mi>c</mi><mi>o</mi><mi>r</mi><mi>e</mi><mo>=</mo><mo stretchy="false">(</mo><mi>α</mi><mo>⋅</mo><mi>v</mi><mo>⋅</mo><mi>d</mi><mi>i</mi><msub><mi>r</mi><mrow><mi>i</mi><mi>d</mi><mi>e</mi><mi>a</mi><mi>l</mi></mrow></msub><mo stretchy="false">)</mo><mo>−</mo><mi>s</mi><mi>p</mi><mi>e</mi><mi>e</mi><msup><mi>d</mi><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">score = (\alpha \cdot v \cdot dir_{ideal}) - speed^2
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathdefault">s</span><span class="mord mathdefault">c</span><span class="mord mathdefault">o</span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mord mathdefault">e</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord mathdefault" style="margin-right:0.0037em;">α</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">⋅</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.44445em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.03588em;">v</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">⋅</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault">d</span><span class="mord mathdefault">i</span><span class="mord"><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.33610799999999996em;"><span style="top:-2.5500000000000003em;margin-left:-0.02778em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight">i</span><span class="mord mathdefault mtight">d</span><span class="mord mathdefault mtight">e</span><span class="mord mathdefault mtight">a</span><span class="mord mathdefault mtight" style="margin-right:0.01968em;">l</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1.0585479999999998em;vertical-align:-0.19444em;"></span><span class="mord mathdefault">s</span><span class="mord mathdefault">p</span><span class="mord mathdefault">e</span><span class="mord mathdefault">e</span><span class="mord"><span class="mord mathdefault">d</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8641079999999999em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span></span></span></span></span></p>
+<p>其中，<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>α</mi></mrow><annotation encoding="application/x-tex">\alpha</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.0037em;">α</span></span></span></span>是权重，<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>v</mi></mrow><annotation encoding="application/x-tex">v</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.03588em;">v</span></span></span></span>是候选速度，<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>d</mi><mi>i</mi><msub><mi>r</mi><mrow><mi>i</mi><mi>d</mi><mi>e</mi><mi>a</mi><mi>l</mi></mrow></msub></mrow><annotation encoding="application/x-tex">dir_{ideal}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.84444em;vertical-align:-0.15em;"></span><span class="mord mathdefault">d</span><span class="mord mathdefault">i</span><span class="mord"><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.33610799999999996em;"><span style="top:-2.5500000000000003em;margin-left:-0.02778em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight">i</span><span class="mord mathdefault mtight">d</span><span class="mord mathdefault mtight">e</span><span class="mord mathdefault mtight">a</span><span class="mord mathdefault mtight" style="margin-right:0.01968em;">l</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>是理想的方向（根据上层的寻路系统得到），speed是速率。下图中的圆形效用在速度域上的可视化，离圆心越远的地方代表速率越大。</p>
+<p><img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/20220308134854.png" alt="" /></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">Kyox24</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://foggyworld.life/posts/590adae3/">https://foggyworld.life/posts/590adae3/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://foggyworld.life" target="_blank">Foggy World</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E6%B8%B8%E6%88%8FAI/">游戏AI</a><a class="post-meta__tags" href="/tags/GDC/">GDC</a></div><div class="post_share"><div class="social-share" data-image="https://cdn.jsdelivr.net/gh/kyox24/PicBed/GDC_new.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/posts/930da6c1/"><img class="next-cover" src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/FF15.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">FF15的游戏AI读书笔记｜第二章 决策工具</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/posts/b24ecaaf/" title="FF15的游戏AI读书笔记｜第一章 游戏AI入门"><img class="cover" src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/FF15.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-02-16</div><div class="title">FF15的游戏AI读书笔记｜第一章 游戏AI入门</div></div></a></div><div><a href="/posts/930da6c1/" title="FF15的游戏AI读书笔记｜第二章 决策工具"><img class="cover" src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/FF15.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-02-19</div><div class="title">FF15的游戏AI读书笔记｜第二章 决策工具</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="twikoo-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/头像.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Kyox24</div><div class="author-info__description">飞蛾扑火</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">32</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">16</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/kyox24"><i class="fab fa-github"></i><span>Github</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/kyox24" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:kyo19951024@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a><a class="social-icon" href="https://weibo.com/p/1005051882165114" target="_blank" title="Weibo"><i class="fab fa-weibo"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">缓慢搭建中</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9F%BA%E7%A1%80%E4%BF%A1%E6%81%AF"><span class="toc-number">1.</span> <span class="toc-text"> 基础信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A6%82%E8%A6%81"><span class="toc-number">2.</span> <span class="toc-text"> 概要</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AF%BB%E8%B7%AF"><span class="toc-number">3.</span> <span class="toc-text"> 寻路</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8A%A8%E7%94%BB%E7%B3%BB%E7%BB%9F%E5%92%8C%E8%BD%AC%E5%90%91%E7%B3%BB%E7%BB%9F%E4%B9%8B%E9%97%B4%E7%9A%84%E9%80%9A%E4%BF%A1"><span class="toc-number">4.</span> <span class="toc-text"> 动画系统和转向系统之间的通信</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9F%BA%E4%BA%8E%E6%95%88%E7%94%A8%E7%9A%84%E8%BD%AC%E5%90%91%E7%B3%BB%E7%BB%9F"><span class="toc-number">5.</span> <span class="toc-text"> 基于效用的转向系统</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/posts/590adae3/" title="转向系统与动画｜GDC笔记"><img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/GDC_new.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="转向系统与动画｜GDC笔记"/></a><div class="content"><a class="title" href="/posts/590adae3/" title="转向系统与动画｜GDC笔记">转向系统与动画｜GDC笔记</a><time datetime="2022-03-08T05:49:33.000Z" title="发表于 2022-03-08 14:49:33">2022-03-08</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/930da6c1/" title="FF15的游戏AI读书笔记｜第二章 决策工具"><img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/FF15.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="FF15的游戏AI读书笔记｜第二章 决策工具"/></a><div class="content"><a class="title" href="/posts/930da6c1/" title="FF15的游戏AI读书笔记｜第二章 决策工具">FF15的游戏AI读书笔记｜第二章 决策工具</a><time datetime="2022-02-18T15:48:49.000Z" title="发表于 2022-02-19 00:48:49">2022-02-19</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/b24ecaaf/" title="FF15的游戏AI读书笔记｜第一章 游戏AI入门"><img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/FF15.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="FF15的游戏AI读书笔记｜第一章 游戏AI入门"/></a><div class="content"><a class="title" href="/posts/b24ecaaf/" title="FF15的游戏AI读书笔记｜第一章 游戏AI入门">FF15的游戏AI读书笔记｜第一章 游戏AI入门</a><time datetime="2022-02-16T09:11:16.000Z" title="发表于 2022-02-16 18:11:16">2022-02-16</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/54d62904/" title="Procedural Landmass Generation E04"><img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/PLG_E04.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Procedural Landmass Generation E04"/></a><div class="content"><a class="title" href="/posts/54d62904/" title="Procedural Landmass Generation E04">Procedural Landmass Generation E04</a><time datetime="2021-09-02T14:58:43.000Z" title="发表于 2021-09-02 23:58:43">2021-09-02</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/cab2bca7/" title="Procedural Landmass Generation E03"><img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://cdn.jsdelivr.net/gh/kyox24/PicBed/PLG_E03.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Procedural Landmass Generation E03"/></a><div class="content"><a class="title" href="/posts/cab2bca7/" title="Procedural Landmass Generation E03">Procedural Landmass Generation E03</a><time datetime="2021-09-02T14:03:39.000Z" title="发表于 2021-09-02 23:03:39">2021-09-02</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By Kyox24</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="translateLink" type="button" title="简繁转换">繁</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module"></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload/dist/lazyload.iife.min.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><div class="js-pjax"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css"><script src="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.js"></script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.css"><script>(() => {
+  document.querySelectorAll('#article-container span.katex-display').forEach(item => {
+    btf.wrap(item, 'div', { class: 'katex-wrap'})
+  })
+})()</script><script>if (document.getElementsByClassName('mermaid').length) {
+  if (window.mermaidJsLoad) mermaid.init()
+  else {
+    getScript('https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js').then(() => {
+      window.mermaidJsLoad = true
+      mermaid.initialize({
+        theme: 'default',
+      })
+      false && mermaid.init()
+    })
+  }
+}</script><script>(()=>{
+  const $countDom = document.getElementById('twikoo-count')
+  const init = () => {
+    twikoo.init(Object.assign({
+      el: '#twikoo-wrap',
+      envId: 'blog-comment-7ggp4lbmaeda677f',
+      region: ''
+    }, null))
+  }
+
+  const getCount = () => {
+    twikoo.getCommentsCount({
+      envId: 'blog-comment-7ggp4lbmaeda677f',
+      region: '',
+      urls: [window.location.pathname],
+      includeReply: false
+    }).then(function (res) {
+      $countDom.innerText = res[0].count
+    }).catch(function (err) {
+      console.error(err);
+    });
+  }
+
+  const loadTwikoo = (bool = false) => {
+    if (typeof twikoo === 'object') {
+      init()
+      bool && $countDom && setTimeout(getCount,0)
+    } else {
+      getScript('https://cdn.jsdelivr.net/npm/twikoo/dist/twikoo.all.min.js').then(()=> {
+        init()
+        bool && $countDom && setTimeout(getCount,0)
+      })
+    }
+  }
+
+  if ('Twikoo' === 'Twikoo' || !true) {
+    if (true) btf.loadComment(document.getElementById('twikoo-wrap'), loadTwikoo)
+    else loadTwikoo(true)
+  } else {
+    window.loadOtherComment = () => {
+      loadTwikoo()
+    }
+  }
+})()</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
